@@ -1,3 +1,6 @@
 import { combineReducers } from "redux";
+import appointmentReducer from "./appointmentReducer";
 
-export default combineReducers({});
+export default combineReducers({
+  users: appointmentReducer,
+});

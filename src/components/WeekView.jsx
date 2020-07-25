@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Paper from "@material-ui/core/Paper";
+import { connect } from "react-redux";
 import { ViewState } from "@devexpress/dx-react-scheduler";
 import {
   Scheduler,
@@ -10,31 +11,21 @@ import {
   TodayButton,
 } from "@devexpress/dx-react-scheduler-material-ui";
 
-export default function Week() {
-  const appointments = [
-    {
-      title: "Website Re-Design Plan",
-      startDate: new Date(),
-      endDate: new Date(),
-      id: 0,
-      location: "Room 1",
-    },
-  ];
+function Week({ users }) {
+  // Test
+  const data = users[1].appts;
 
-  const [state, setState] = useState({
-    data: appointments,
-    currentDate: Date.now(),
-  });
+  const [currentDate, setCurrentDate] = useState(Date.now());
 
   const currentDateChange = currentDate => {
-    setState({ ...state, currentDate });
+    setCurrentDate(currentDate);
   };
 
   return (
     <Paper>
-      <Scheduler data={state.data} height={"100%"}>
+      <Scheduler data={data} height={936}>
         <ViewState
-          currentDate={state.currentDate}
+          currentDate={currentDate}
           onCurrentDateChange={currentDateChange}
         />
         <WeekView startDayHour={0} endDayHour={24} />
@@ -46,3 +37,9 @@ export default function Week() {
     </Paper>
   );
 }
+
+const mapStateToProps = state => ({
+  users: state.users,
+});
+
+export default connect(mapStateToProps, {})(Week);
