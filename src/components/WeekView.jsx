@@ -36,9 +36,8 @@ export default function Week() {
         <ViewState
           currentDate={state.currentDate}
           onCurrentDateChange={currentDateChange}
-        
         />
-        <WeekView startDayHour={9} endDayHour={19} />
+        <WeekView startDayHour={0} endDayHour={24} />
         <Toolbar />
         <DateNavigator />
         <TodayButton />
