@@ -42,7 +42,7 @@ function Week({ appointments, addAppointment, editAppointment, drivers }) {
       addAppointment({ added, currentDriver });
     }
     if (changed) {
-      editAppointment(changed)
+      editAppointment({ changed, currentDriver });
     }
   };
 

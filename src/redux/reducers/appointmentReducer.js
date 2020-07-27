@@ -17,7 +17,6 @@ export default function (state = initialState, action) {
   switch (action.type) {
     case ADD_APPOINTMENT:
       const currentDriverId = action.payload.currentDriver;
-
       const newAppointmentState = [...state[currentDriverId]];
 
       const startingAddedId =
@@ -35,7 +34,15 @@ export default function (state = initialState, action) {
         [currentDriverId]: newAppointmentState,
       };
     case EDIT_APPOINTMENT:
-      console.log("action :>> ", action);
+      const { currentDriver, changed } = action.payload;
+
+      const updatedAppointments = state[currentDriver].map(appointment => {
+        return changed[appointment.id]
+          ? { ...appointment, ...changed[appointment.id] }
+          : appointment;
+      });
+
+      return { ...state, [currentDriver]: updatedAppointments };
     default:
       return state;
   }

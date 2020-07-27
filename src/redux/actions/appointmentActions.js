@@ -8,9 +8,8 @@ export const addAppointment = appointment => dispatch => {
 };
 
 export const editAppointment = newData => dispatch => {
-  console.log('newData :>> ', newData);
-  // dispatch({
-  //   type: EDIT_APPOINTMENT,
-  //   payload: newData,
-  // });
+  dispatch({
+    type: EDIT_APPOINTMENT,
+    payload: newData,
+  });
 };
