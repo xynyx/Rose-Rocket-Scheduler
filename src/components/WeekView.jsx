@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import { connect } from "react-redux";
-import { ViewState, EditingState } from "@devexpress/dx-react-scheduler";
+import {
+  ViewState,
+  EditingState,
+  IntegratedEditing,
+} from "@devexpress/dx-react-scheduler";
 import {
   Scheduler,
   WeekView,
@@ -19,18 +23,19 @@ function Week({ users }) {
   const data = users[1].appts;
 
   const [currentDate, setCurrentDate] = useState(Date.now());
-  const [appointment, setAppointment] = useState({
-    // dispatchType: "Pickup",
-    addedAppointment: {
-      title: "Pickup",
-    },
-    appointmentChanges: {},
-    editingAppointmentId: undefined,
-  });
+  // const [appointment, setAppointment] = useState({
+  //   addedAppointment: {title: "Pickup"},
+  //   appointmentChanges: {},
+  //   editingAppointmentId: undefined,
+  // });
 
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
   };
+
+  // useEffect(() => {
+  //   console.log(appointment.addedAppointment);
+  // }, [appointment.addedAppointment]);
 
   const commitChanges = ({ added, changed, deleted }) => {
     console.log("added :>> ", added);
@@ -39,48 +44,54 @@ function Week({ users }) {
   };
 
   // TODO -
-  // const addedAppointment = e => {
-  //   console.log("e.1 :>> ", e);
+
+  // const changeAddedAppointment = addedAppointment => {
+  //   console.log("addedAppointment :>> ", addedAppointment);
+  //   addedAppointment.title = addedAppointment.title
+  //     ? addedAppointment.title
+  //     : "Pickup";
+  //   // console.log("appointmentHERE! :>> ", appointment);
+  //   setAppointment({
+  //     ...appointment,
+  //     addedAppointment: {
+  //       ...appointment.addedAppointment,
+  //       ...addedAppointment,
+  //     },
+  //   });
+  //   // console.log('appointment :>> ', appointment);
   // };
-  const changeAddedAppointment = addedAppointment => {
-    // console.log("addedAppointment :>> ", addedAppointment);
-    // console.log("appointmentHERE! :>> ", appointment);
-    setAppointment({
-      ...appointment,
-      addedAppointment: {
-        ...appointment.addedAppointment,
-        ...addedAppointment,
-      },
-    });
-  };
-  const changeAppointmentChanges = e => {
-    console.log("e.3 :>> ", e);
-  };
-  const changeEditingAppointment = e => {
-    console.log("e.5 :>> ", e);
-  };
+  // const changeAppointmentChanges = e => {
+  //   console.log("e.3 :>> ", e);
+  // };
+  // const changeEditingAppointment = e => {
+  //   console.log("e.5 :>> ", e);
+  // };
 
   const messages = {
     moreInformationLabel: "",
   };
 
   const TextEditor = props => {
-    // eslint-disable-next-line react/destructuring-assignment
     if (props.type === "titleTextEditor") {
       return null;
     }
     return <AppointmentForm.TextEditor {...props} />;
   };
 
-  const basicLayout = ({
-    onFieldChange,
-    appointmentData,
-    appointmentResources,
-    ...restProps
-  }) => {
-    const onCustomFieldChange = nextValue => {
-      onFieldChange({ ...appointment.addedAppointment, title: nextValue });
+  const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
+    const onDispatchChange = nextValue => {
+      console.log("nextValueHERE :>> ", nextValue);
+      onFieldChange({ title: nextValue });
     };
+
+    const onLocationChange = nextValue => {
+      console.log("nextValue :>> ", nextValue);
+      onFieldChange({ location: nextValue });
+    };
+
+    appointmentData.title = appointmentData.title
+      ? appointmentData.title
+      : "Pickup";
 
     // console.log("appointmentResources :>> ", appointmentResources);
     console.log("appointmentData :>> ", appointmentData);
@@ -89,9 +100,14 @@ function Week({ users }) {
         appointmentData={appointmentData}
         onFieldChange={onFieldChange}
         {...restProps}
-        textEditorComponent={TextEditor}
-        // labelComponent={() => null}
+        // textEditorComponent={TextEditor}
       >
+        <AppointmentForm.Label text="Location" type="title" />
+        <AppointmentForm.TextEditor
+          value={appointmentData.location}
+          onValueChange={onLocationChange}
+          placeholder="Location"
+        />
         <AppointmentForm.Label text="Type of Dispatch" type="title" />
         <AppointmentForm.Select
           availableOptions={[
@@ -99,8 +115,8 @@ function Week({ users }) {
             { id: "Dropoff", text: "Dropoff" },
             { id: "Other", text: "Other" },
           ]}
-          onValueChange={onCustomFieldChange}
-          value={appointmentData.title ? appointmentData.title : "Pickup"}
+          onValueChange={onDispatchChange}
+          value={appointmentData.title}
         />
       </AppointmentForm.BasicLayout>
     );
@@ -115,12 +131,13 @@ function Week({ users }) {
         />
         <EditingState
           onCommitChanges={commitChanges}
-          addedAppointment={appointment.addedAppointment}
-          onAddedAppointmentChange={changeAddedAppointment}
-          onAppointmentChangesChange={changeAppointmentChanges}
-          editingAppointmentId={appointment.editingAppointmentId}
-          onEditingAppointmentIdChange={changeEditingAppointment}
+          // addedAppointment={appointment.addedAppointment}
+          // onAddedAppointmentChange={changeAddedAppointment}
+          // onAppointmentChangesChange={changeAppointmentChanges}
+          // editingAppointmentId={appointment.editingAppointmentId}
+          // onEditingAppointmentIdChange={changeEditingAppointment}
         />
+        <IntegratedEditing />
         <WeekView startDayHour={0} endDayHour={24} />
         <Toolbar />
         <DateNavigator />
@@ -129,7 +146,8 @@ function Week({ users }) {
         <Appointments />
         <AppointmentTooltip showOpenButton showDeleteButton />
         <AppointmentForm
-          basicLayoutComponent={basicLayout}
+          basicLayoutComponent={BasicLayout}
+          textEditorComponent={TextEditor}
           // Hides radio boxes
           booleanEditorComponent={() => null}
           messages={messages}
