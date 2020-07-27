@@ -38,6 +38,7 @@ export default function (state = initialState, action) {
         [currentDriverId]: newAppointmentState,
       };
     case EDIT_APPOINTMENT:
+      // TODO - refactor logic back into WeekView
       const { currentDriver, changed } = action.payload;
 
       const updatedAppointments = state[currentDriver].map(appointment => {
@@ -48,21 +49,19 @@ export default function (state = initialState, action) {
 
       return { ...state, [currentDriver]: updatedAppointments };
     case DELETE_APPOINTMENT:
-    console.log('action :>> ', action);
+      const { deleted } = action.payload;
+      const currentDriverID = action.payload.currentDriver;
+
+      const updatedAppointmentsAgain = state[currentDriverID].filter(
+        appointment => appointment.id !== deleted
+      );
+
+      return {
+        ...state,
+        [currentDriverID]: updatedAppointmentsAgain,
+      };
 
     default:
       return state;
   }
 }
-
-/*       if (changed) {
-        data = data.map(appointment =>
-          changed[appointment.id]
-            ? { ...appointment, ...changed[appointment.id] }
-            : appointment
-        );
-      }
-      if (deleted !== undefined) {
-        data = data.filter(appointment => appointment.id !== deleted);
-      }
-      return { data }; */

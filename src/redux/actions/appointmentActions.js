@@ -19,9 +19,8 @@ export const editAppointment = newData => dispatch => {
 };
 
 export const deleteAppointment = appointmentId => dispatch => {
-  console.log('appointmentId :>> ', appointmentId);
-  // dispatch({
-  //   type: DELETE_APPOINTMENT,
-  //   payload: appointmentId,
-  // });
+  dispatch({
+    type: DELETE_APPOINTMENT,
+    payload: appointmentId,
+  });
 };

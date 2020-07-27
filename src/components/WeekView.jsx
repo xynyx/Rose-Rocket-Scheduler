@@ -45,14 +45,13 @@ function Week({
   const commitChanges = ({ added, changed, deleted }) => {
     if (added) {
       if (!added.title) added.title = "Pickup";
+
       addAppointment({ added, currentDriver });
     }
     if (changed) {
       editAppointment({ changed, currentDriver });
     }
     if (deleted !== undefined) {
-      console.log("deleted :>> ", deleted);
-
       deleteAppointment({ deleted, currentDriver });
     }
   };
@@ -69,12 +68,12 @@ function Week({
   };
 
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
-    const onDispatchChange = nextValue => {
-      onFieldChange({ title: nextValue });
+    const onDispatchChange = title => {
+      onFieldChange({ title });
     };
 
-    const onLocationChange = nextValue => {
-      onFieldChange({ location: nextValue });
+    const onLocationChange = location => {
+      onFieldChange({ location });
     };
 
     appointmentData.title = appointmentData.title
