@@ -20,10 +20,9 @@ import {
 
 import DriverSelect from "./DriverSelect";
 
-function Week({ users, drivers }) {
-  // console.log('drivers :>> ', drivers);
-  // Test
-  const data = users[1].appts;
+function Week({ appointments, drivers }) {
+  const driverId = drivers.selectedDriver.id;
+  const data = appointments[driverId];
 
   const [currentDate, setCurrentDate] = useState(Date.now());
 
@@ -154,8 +153,8 @@ function Week({ users, drivers }) {
 }
 
 const mapStateToProps = state => ({
-  users: state.users,
-  drivers: state.drivers
+  appointments: state.appointments,
+  drivers: state.drivers,
 });
 
 export default connect(mapStateToProps, {})(Week);

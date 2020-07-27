@@ -20,9 +20,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function DriverSelect({ drivers, setDriver }) {
-  console.log("drivers :>> ", drivers.selectedDriver.name);
   const classes = useStyles();
-  // const [age, setAge] = React.useState("");
 
   const driverList = drivers.driverList.map(driver => (
     <MenuItem key={driver.id} name={driver.id} value={driver.name}>

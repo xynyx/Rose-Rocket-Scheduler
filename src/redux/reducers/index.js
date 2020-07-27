@@ -3,6 +3,6 @@ import appointmentReducer from "./appointmentReducer";
 import driverReducer from "./driverReducer";
 
 export default combineReducers({
-  users: appointmentReducer,
+  appointments: appointmentReducer,
   drivers: driverReducer
 });
