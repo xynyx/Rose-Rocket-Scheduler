@@ -19,10 +19,13 @@ import {
 } from "@devexpress/dx-react-scheduler-material-ui";
 
 import DriverSelect from "./DriverSelect";
-import { addAppointment } from "../redux/actions/appointmentActions";
+import {
+  addAppointment,
+  editAppointment,
+} from "../redux/actions/appointmentActions";
 
-function Week({ appointments, addAppointment, drivers }) {
-  console.log('appointments :>> ', appointments);
+function Week({ appointments, addAppointment, editAppointment, drivers }) {
+  console.log("appointments :>> ", appointments);
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
 
@@ -38,8 +41,9 @@ function Week({ appointments, addAppointment, drivers }) {
       if (!added.title) added.title = "Pickup";
       addAppointment({ added, currentDriver });
     }
-    console.log("changed :>> ", changed);
-    console.log("deleted :>> ", deleted);
+    if (changed) {
+      editAppointment(changed)
+    }
   };
 
   // TODO -
@@ -159,4 +163,6 @@ const mapStateToProps = state => ({
   drivers: state.drivers,
 });
 
-export default connect(mapStateToProps, { addAppointment })(Week);
+export default connect(mapStateToProps, { addAppointment, editAppointment })(
+  Week
+);

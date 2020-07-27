@@ -1,4 +1,4 @@
-import { ADD_APPOINTMENT } from "../actionTypes";
+import { ADD_APPOINTMENT, EDIT_APPOINTMENT } from "../actionTypes";
 
 const initialState = {
   0: [
@@ -20,13 +20,35 @@ export default function (state = initialState, action) {
 
       const newAppointmentState = [...state[currentDriverId]];
 
-      newAppointmentState.push(action.payload.added);
+      const startingAddedId =
+        newAppointmentState.length > 0
+          ? newAppointmentState[newAppointmentState.length - 1].id + 1
+          : 0;
+
+      newAppointmentState.push({
+        id: startingAddedId,
+        ...action.payload.added,
+      });
 
       return {
         ...state,
         [currentDriverId]: newAppointmentState,
       };
+    case EDIT_APPOINTMENT:
+      console.log("action :>> ", action);
     default:
       return state;
   }
 }
+
+/*       if (changed) {
+        data = data.map(appointment =>
+          changed[appointment.id]
+            ? { ...appointment, ...changed[appointment.id] }
+            : appointment
+        );
+      }
+      if (deleted !== undefined) {
+        data = data.filter(appointment => appointment.id !== deleted);
+      }
+      return { data }; */
