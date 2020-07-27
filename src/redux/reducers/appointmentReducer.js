@@ -11,11 +11,10 @@ const initialState = [
     name: "Hammy Hambone",
     appts: [
       {
-        title: "Website Re-Design Plan",
+        title: "Dropoff",
         startDate: new Date(),
         endDate: new Date(),
         id: 0,
-        location: "Room 1",
       },
     ],
   },

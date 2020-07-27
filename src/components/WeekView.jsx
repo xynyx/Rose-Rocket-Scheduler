@@ -19,6 +19,14 @@ function Week({ users }) {
   const data = users[1].appts;
 
   const [currentDate, setCurrentDate] = useState(Date.now());
+  const [appointment, setAppointment] = useState({
+    // dispatchType: "Pickup",
+    addedAppointment: {
+      title: "Pickup",
+    },
+    appointmentChanges: {},
+    editingAppointmentId: undefined,
+  });
 
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
@@ -31,91 +39,72 @@ function Week({ users }) {
   };
 
   // TODO -
-  const addedAppointment = e => {
-    console.log("e.1 :>> ", e);
-  };
-  const changeAddedAppointment = e => {
-    console.log("e.2 :>> ", e);
+  // const addedAppointment = e => {
+  //   console.log("e.1 :>> ", e);
+  // };
+  const changeAddedAppointment = addedAppointment => {
+    // console.log("addedAppointment :>> ", addedAppointment);
+    // console.log("appointmentHERE! :>> ", appointment);
+    setAppointment({
+      ...appointment,
+      addedAppointment: {
+        ...appointment.addedAppointment,
+        ...addedAppointment,
+      },
+    });
   };
   const changeAppointmentChanges = e => {
     console.log("e.3 :>> ", e);
-  };
-  const editingAppointmentId = e => {
-    console.log("e.4 :>> ", e);
   };
   const changeEditingAppointment = e => {
     console.log("e.5 :>> ", e);
   };
 
-  const test = e => {
-    console.log(e);
-  };
-
   const messages = {
-    moreInformationLabel: '',
+    moreInformationLabel: "",
   };
 
-  const TextEditor = (props) => {
-    console.log('props.type :>> ', props.type);
+  const TextEditor = props => {
     // eslint-disable-next-line react/destructuring-assignment
-    if (props.type === 'multilineTextEditor') {
-      return null;
-    } return <AppointmentForm.TextEditor {...props} />;
-  };
-
-  const radioComponent = props => {
-    console.log("props.type :>> ", props);
-    if (props.type === "endRepeat") {
+    if (props.type === "titleTextEditor") {
       return null;
     }
-    return <AppointmentForm.RadioGroup {...props} />;
+    return <AppointmentForm.TextEditor {...props} />;
   };
 
-  const weeklyRecurrence = props => {
-    return null;
-  }
-
-  const basicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
+  const basicLayout = ({
+    onFieldChange,
+    appointmentData,
+    appointmentResources,
+    ...restProps
+  }) => {
     const onCustomFieldChange = nextValue => {
-      onFieldChange({ customField: nextValue });
+      onFieldChange({ ...appointment.addedAppointment, title: nextValue });
     };
 
+    // console.log("appointmentResources :>> ", appointmentResources);
+    console.log("appointmentData :>> ", appointmentData);
     return (
       <AppointmentForm.BasicLayout
         appointmentData={appointmentData}
         onFieldChange={onFieldChange}
         {...restProps}
-        textEditorComponent={() => null}
-            // labelComponent={() => null}
-
+        textEditorComponent={TextEditor}
+        // labelComponent={() => null}
       >
         <AppointmentForm.Label text="Type of Dispatch" type="title" />
         <AppointmentForm.Select
           availableOptions={[
-            { id: 0, text: "Pickup" },
-            { id: 1, text: "Dropoff" },
-            { id: 2, text: "Other" },
+            { id: "Pickup", text: "Pickup" },
+            { id: "Dropoff", text: "Dropoff" },
+            { id: "Other", text: "Other" },
           ]}
-          onValueChange={test}
-          value={0}
+          onValueChange={onCustomFieldChange}
+          value={appointmentData.title ? appointmentData.title : "Pickup"}
         />
       </AppointmentForm.BasicLayout>
     );
   };
-
-  // const selectProps = () => {
-  //   return (
-  //     <AppointmentForm.Select
-  //       availableOptions={[
-  //         { id: 0, text: "One" },
-  //         { id: 1, text: "Two" },
-  //         { id: 2, text: "Three" },
-  //       ]}
-  //       onValueChange={test}
-  //       value={0}
-  //     />
-  //   );
-  // };
 
   return (
     <Paper>
@@ -126,10 +115,10 @@ function Week({ users }) {
         />
         <EditingState
           onCommitChanges={commitChanges}
-          addedAppointment={addedAppointment}
+          addedAppointment={appointment.addedAppointment}
           onAddedAppointmentChange={changeAddedAppointment}
           onAppointmentChangesChange={changeAppointmentChanges}
-          editingAppointmentId={editingAppointmentId}
+          editingAppointmentId={appointment.editingAppointmentId}
           onEditingAppointmentIdChange={changeEditingAppointment}
         />
         <WeekView startDayHour={0} endDayHour={24} />
@@ -141,19 +130,9 @@ function Week({ users }) {
         <AppointmentTooltip showOpenButton showDeleteButton />
         <AppointmentForm
           basicLayoutComponent={basicLayout}
-          // weeklyRecurrenceSelectorComponent={weeklyRecurrence}
-          textEditorComponent={TextEditor}
-          // recurrenceLayoutComponent={() => null}
-    // commandButtonComponent={() => null}
-    // dateEditorComponent={() => null}
-    // Hides radio boxes
-    booleanEditorComponent={() => null}
-    // commandLayoutComponent={() => null}
-    // labelComponent={() => null}
-    // selectComponent={() => null}
-    messages={messages}
-    // resourceEditorComponent={() => null}
-          // selectComponent={selectProps}
+          // Hides radio boxes
+          booleanEditorComponent={() => null}
+          messages={messages}
         />
       </Scheduler>
     </Paper>
