@@ -19,20 +19,16 @@ import {
 } from "@devexpress/dx-react-scheduler-material-ui";
 
 import DriverSelect from "./DriverSelect";
+import {addAppointment} from "../redux/actions/appointmentActions";
 
 function Week({ appointments, drivers }) {
-  const driverId = drivers.selectedDriver.id;
-  const data = appointments[driverId];
+  const data = appointments[drivers.selectedDriver.id];
 
   const [currentDate, setCurrentDate] = useState(Date.now());
 
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
   };
-
-  // useEffect(() => {
-  //   console.log(appointment.addedAppointment);
-  // }, [appointment.addedAppointment]);
 
   const commitChanges = ({ added, changed, deleted }) => {
     console.log("added :>> ", added);
@@ -88,13 +84,13 @@ function Week({ appointments, drivers }) {
       ? appointmentData.title
       : "Pickup";
 
-    console.log("appointmentData :>> ", appointmentData);
+      console.log('appointmentData :>> ', appointmentData);
+
     return (
       <AppointmentForm.BasicLayout
         appointmentData={appointmentData}
         onFieldChange={onFieldChange}
         {...restProps}
-        // textEditorComponent={TextEditor}
       >
         <AppointmentForm.Label text="Location" type="title" />
         <AppointmentForm.TextEditor

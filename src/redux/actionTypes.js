@@ -1,1 +1,2 @@
 export const SET_DRIVER = "SET_DRIVER";
+export const ADD_APPOINTMENT = "ADD_APPOINTMENT";

@@ -1,4 +1,4 @@
-import { SET_DRIVER } from "./actionTypes";
+import { SET_DRIVER } from "../actionTypes";
 
 export const setDriver = driverId => dispatch => {
   dispatch({

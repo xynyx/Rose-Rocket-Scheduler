@@ -7,7 +7,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { connect } from "react-redux";
 
-import { setDriver } from "../redux/actions";
+import { setDriver } from "../redux/actions/driverActions";
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -29,9 +29,10 @@ function DriverSelect({ drivers, setDriver }) {
   ));
 
   const handleChange = (e, driver) => {
-    console.log("name :>> ", driver.props.name);
-    console.log("e.target.name :>> ", e.target);
-    setDriver(driver.props.name)
+    // Cannot get the id of driver with MenuItem if the value is the driver's actual name
+    // However the 2nd parameter has props which includes the ID (called as name in MenuItem)
+    // Safer to set/get drivers by their unique ID rather than name
+    setDriver(driver.props.name);
   };
   return (
     <div>
