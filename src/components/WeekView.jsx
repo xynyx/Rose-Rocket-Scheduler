@@ -19,10 +19,12 @@ import {
 } from "@devexpress/dx-react-scheduler-material-ui";
 
 import DriverSelect from "./DriverSelect";
-import {addAppointment} from "../redux/actions/appointmentActions";
+import { addAppointment } from "../redux/actions/appointmentActions";
 
-function Week({ appointments, drivers }) {
-  const data = appointments[drivers.selectedDriver.id];
+function Week({ appointments, addAppointment, drivers }) {
+  console.log('appointments :>> ', appointments);
+  const currentDriver = drivers.selectedDriver.id;
+  const data = appointments[currentDriver];
 
   const [currentDate, setCurrentDate] = useState(Date.now());
 
@@ -32,6 +34,10 @@ function Week({ appointments, drivers }) {
 
   const commitChanges = ({ added, changed, deleted }) => {
     console.log("added :>> ", added);
+    if (added) {
+      if (!added.title) added.title = "Pickup";
+      addAppointment({ added, currentDriver });
+    }
     console.log("changed :>> ", changed);
     console.log("deleted :>> ", deleted);
   };
@@ -84,7 +90,7 @@ function Week({ appointments, drivers }) {
       ? appointmentData.title
       : "Pickup";
 
-      console.log('appointmentData :>> ', appointmentData);
+    console.log("appointmentData :>> ", appointmentData);
 
     return (
       <AppointmentForm.BasicLayout
@@ -153,4 +159,4 @@ const mapStateToProps = state => ({
   drivers: state.drivers,
 });
 
-export default connect(mapStateToProps, {})(Week);
+export default connect(mapStateToProps, { addAppointment })(Week);

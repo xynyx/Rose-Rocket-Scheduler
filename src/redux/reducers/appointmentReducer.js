@@ -1,4 +1,4 @@
-import {} from "../actionTypes";
+import { ADD_APPOINTMENT } from "../actionTypes";
 
 const initialState = {
   0: [
@@ -15,6 +15,17 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case ADD_APPOINTMENT:
+      const currentDriverId = action.payload.currentDriver;
+
+      const newAppointmentState = [...state[currentDriverId]];
+
+      newAppointmentState.push(action.payload.added);
+
+      return {
+        ...state,
+        [currentDriverId]: newAppointmentState,
+      };
     default:
       return state;
   }
