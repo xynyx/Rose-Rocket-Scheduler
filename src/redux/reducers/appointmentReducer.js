@@ -1,4 +1,8 @@
-import { ADD_APPOINTMENT, EDIT_APPOINTMENT } from "../actionTypes";
+import {
+  ADD_APPOINTMENT,
+  EDIT_APPOINTMENT,
+  DELETE_APPOINTMENT,
+} from "../actionTypes";
 
 const initialState = {
   0: [
@@ -43,6 +47,9 @@ export default function (state = initialState, action) {
       });
 
       return { ...state, [currentDriver]: updatedAppointments };
+    case DELETE_APPOINTMENT:
+    console.log('action :>> ', action);
+
     default:
       return state;
   }

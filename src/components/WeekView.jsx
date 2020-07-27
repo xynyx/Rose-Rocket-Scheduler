@@ -22,9 +22,16 @@ import DriverSelect from "./DriverSelect";
 import {
   addAppointment,
   editAppointment,
+  deleteAppointment,
 } from "../redux/actions/appointmentActions";
 
-function Week({ appointments, addAppointment, editAppointment, drivers }) {
+function Week({
+  appointments,
+  addAppointment,
+  editAppointment,
+  deleteAppointment,
+  drivers,
+}) {
   console.log("appointments :>> ", appointments);
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
@@ -36,7 +43,6 @@ function Week({ appointments, addAppointment, editAppointment, drivers }) {
   };
 
   const commitChanges = ({ added, changed, deleted }) => {
-    console.log("added :>> ", added);
     if (added) {
       if (!added.title) added.title = "Pickup";
       addAppointment({ added, currentDriver });
@@ -44,31 +50,12 @@ function Week({ appointments, addAppointment, editAppointment, drivers }) {
     if (changed) {
       editAppointment({ changed, currentDriver });
     }
+    if (deleted !== undefined) {
+      console.log("deleted :>> ", deleted);
+
+      deleteAppointment({ deleted, currentDriver });
+    }
   };
-
-  // TODO -
-
-  // const changeAddedAppointment = addedAppointment => {
-  //   console.log("addedAppointment :>> ", addedAppointment);
-  //   addedAppointment.title = addedAppointment.title
-  //     ? addedAppointment.title
-  //     : "Pickup";
-  //   // console.log("appointmentHERE! :>> ", appointment);
-  //   setAppointment({
-  //     ...appointment,
-  //     addedAppointment: {
-  //       ...appointment.addedAppointment,
-  //       ...addedAppointment,
-  //     },
-  //   });
-  //   // console.log('appointment :>> ', appointment);
-  // };
-  // const changeAppointmentChanges = e => {
-  //   console.log("e.3 :>> ", e);
-  // };
-  // const changeEditingAppointment = e => {
-  //   console.log("e.5 :>> ", e);
-  // };
 
   const messages = {
     moreInformationLabel: "",
@@ -163,6 +150,8 @@ const mapStateToProps = state => ({
   drivers: state.drivers,
 });
 
-export default connect(mapStateToProps, { addAppointment, editAppointment })(
-  Week
-);
+export default connect(mapStateToProps, {
+  addAppointment,
+  editAppointment,
+  deleteAppointment,
+})(Week);
