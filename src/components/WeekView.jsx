@@ -18,16 +18,14 @@ import {
   AppointmentForm,
 } from "@devexpress/dx-react-scheduler-material-ui";
 
-function Week({ users }) {
+import DriverSelect from "./DriverSelect";
+
+function Week({ users, drivers }) {
+  // console.log('drivers :>> ', drivers);
   // Test
   const data = users[1].appts;
 
   const [currentDate, setCurrentDate] = useState(Date.now());
-  // const [appointment, setAppointment] = useState({
-  //   addedAppointment: {title: "Pickup"},
-  //   appointmentChanges: {},
-  //   editingAppointmentId: undefined,
-  // });
 
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
@@ -80,12 +78,10 @@ function Week({ users }) {
 
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
     const onDispatchChange = nextValue => {
-      console.log("nextValueHERE :>> ", nextValue);
       onFieldChange({ title: nextValue });
     };
 
     const onLocationChange = nextValue => {
-      console.log("nextValue :>> ", nextValue);
       onFieldChange({ location: nextValue });
     };
 
@@ -93,7 +89,6 @@ function Week({ users }) {
       ? appointmentData.title
       : "Pickup";
 
-    // console.log("appointmentResources :>> ", appointmentResources);
     console.log("appointmentData :>> ", appointmentData);
     return (
       <AppointmentForm.BasicLayout
@@ -141,6 +136,7 @@ function Week({ users }) {
         <WeekView startDayHour={0} endDayHour={24} />
         <Toolbar />
         <DateNavigator />
+        <DriverSelect />
         <TodayButton />
         <ConfirmationDialog />
         <Appointments />
@@ -159,6 +155,7 @@ function Week({ users }) {
 
 const mapStateToProps = state => ({
   users: state.users,
+  drivers: state.drivers
 });
 
 export default connect(mapStateToProps, {})(Week);
