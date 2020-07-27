@@ -7,6 +7,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { connect } from "react-redux";
 
+import { setDriver } from "../redux/actions";
+
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
@@ -17,28 +19,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function DriverSelect({ drivers }) {
-  // console.log("drivers :>> ", drivers);
+function DriverSelect({ drivers, setDriver }) {
+  console.log("drivers :>> ", drivers.selectedDriver.name);
   const classes = useStyles();
   // const [age, setAge] = React.useState("");
 
   const driverList = drivers.driverList.map(driver => (
-    <MenuItem key={driver.id} value={driver.id}>
+    <MenuItem key={driver.id} name={driver.id} value={driver.name}>
       {driver.name}
     </MenuItem>
   ));
 
-  const handleChange = event => {
-    // setAge(event.target.value);
+  const handleChange = (e, driver) => {
+    console.log("name :>> ", driver.props.name);
+    console.log("e.target.name :>> ", e.target);
+    setDriver(driver.props.name)
   };
   return (
     <div>
       <FormControl variant="outlined" className={classes.formControl}>
-        <InputLabel id="demo-simple-select-outlined-label">Drivers</InputLabel>
+        <InputLabel>Drivers</InputLabel>
         <Select
-          labelId="demo-simple-select-outlined-label"
-          id="demo-simple-select-outlined"
-          value={drivers.driverList[0].name}
+          value={drivers.selectedDriver.name}
           onChange={handleChange}
           label="Drivers"
         >
@@ -53,4 +55,4 @@ const mapStateToProps = state => ({
   drivers: state.drivers,
 });
 
-export default connect(mapStateToProps, {})(DriverSelect);
+export default connect(mapStateToProps, { setDriver })(DriverSelect);
