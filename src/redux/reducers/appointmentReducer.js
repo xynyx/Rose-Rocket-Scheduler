@@ -33,8 +33,6 @@ export default function (state = initialState, action) {
         ...action.payload.added,
       });
 
-      console.log('newAppointmentState :>> ', newAppointmentState);
-
       return {
         ...state,
         [currentDriverId]: newAppointmentState,

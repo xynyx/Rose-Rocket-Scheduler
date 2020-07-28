@@ -33,13 +33,6 @@ import { extendMoment } from "moment-range";
 const moment = extendMoment(Moment);
 moment().format();
 
-/**
- * TODO *
- * [x] If new tasks conflicts, give option to OVERWRITE old task
- * [x] If updating a task causes it to conflict with another task, give option to OVERWRITE old task
- * [x] Task cannot span multiple days
- */
-
 function Week({
   appointments,
   addAppointment,
@@ -57,62 +50,10 @@ function Week({
     oldAppointment: {},
   });
 
-  console.log("taskToOverwrite :>> ", taskToOverwrite);
-
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
   };
 
-  /*   case ADD_APPOINTMENT:
-      const currentDriverId = action.payload.currentDriver;
-      const newAppointmentState = [...state[currentDriverId]];
-
-      const startingAddedId =
-        newAppointmentState.length > 0
-          ? newAppointmentState[newAppointmentState.length - 1].id + 1
-          : 0;
-
-      newAppointmentState.push({
-        id: startingAddedId,
-        ...action.payload.added,
-      });
-
-      console.log('newAppointmentState :>> ', newAppointmentState);
-
-      return {
-        ...state,
-        [currentDriverId]: newAppointmentState,
-      };
-    case EDIT_APPOINTMENT:
-      // TODO - refactor logic back into WeekView
-      const { currentDriver, changed } = action.payload;
-
-      const updatedAppointments = state[currentDriver].map(appointment => {
-        return changed[appointment.id]
-          ? { ...appointment, ...changed[appointment.id] }
-          : appointment;
-      });
-
-      return { ...state, [currentDriver]: updatedAppointments };
-    case DELETE_APPOINTMENT:
-      const { deleted } = action.payload;
-      const currentDriverID = action.payload.currentDriver;
-
-      const updatedAppointmentsAgain = state[currentDriverID].filter(
-        appointment => appointment.id !== deleted
-      );
-      
-      console.log('deleted :>> ', deleted);
-        console.log('currentDriverID :>> ', currentDriverID );
-
-        console.log('updatedAppointmentsAgain :>> ', updatedAppointmentsAgain);
-
-        console.log('state :>> ', state);
-      return {
-        ...state,
-        [currentDriverID]: updatedAppointmentsAgain,
-      };
-       */
   const commitChanges = ({ added, changed, deleted }) => {
     const errors = {};
 
@@ -156,19 +97,43 @@ function Week({
       setErrors(errors);
     }
 
+    /**
+     *
+     */
     if (added) {
       if (Object.keys(errors).length === 0) {
         setErrors({});
         addAppointment({ added, currentDriver });
+
+        /*         const newAppointmentState = [...data];
+
+        const startingAddedId =
+          newAppointmentState.length > 0
+            ? newAppointmentState[newAppointmentState.length - 1].id + 1
+            : 0;
+
+        newAppointmentState.push({
+          id: startingAddedId,
+          ...added,
+        });
+
+        addAppointment({ [currentDriver]: newAppointmentState }); */
       }
     }
 
+    /**
+     *
+     */
     if (changed) {
       if (Object.keys(errors).length === 0) {
         setErrors({});
         editAppointment({ changed, currentDriver });
       }
     }
+
+    /**
+     *
+     */
     if (deleted !== undefined) {
       deleteAppointment({ deleted, currentDriver });
     }
