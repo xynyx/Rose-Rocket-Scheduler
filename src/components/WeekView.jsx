@@ -162,7 +162,7 @@ function Week({
 
     setErrors({});
 
-    setTasksToOverwrite({ newAppointment: {}, oldAppointment: {} });
+    setTasksToOverwrite({ newAppointment: {}, oldAppointments: [] });
   };
 
   const CommandLayout = ({ onCommitButtonClick, ...rest }) => {
