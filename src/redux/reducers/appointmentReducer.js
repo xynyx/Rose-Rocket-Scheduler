@@ -33,6 +33,8 @@ export default function (state = initialState, action) {
         ...action.payload.added,
       });
 
+      console.log('newAppointmentState :>> ', newAppointmentState);
+
       return {
         ...state,
         [currentDriverId]: newAppointmentState,
@@ -55,7 +57,13 @@ export default function (state = initialState, action) {
       const updatedAppointmentsAgain = state[currentDriverID].filter(
         appointment => appointment.id !== deleted
       );
+      
+      console.log('deleted :>> ', deleted);
+        console.log('currentDriverID :>> ', currentDriverID );
 
+        console.log('updatedAppointmentsAgain :>> ', updatedAppointmentsAgain);
+
+        console.log('state :>> ', state);
       return {
         ...state,
         [currentDriverID]: updatedAppointmentsAgain,

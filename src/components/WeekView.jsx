@@ -19,6 +19,8 @@ import {
 } from "@devexpress/dx-react-scheduler-material-ui";
 
 import Alert from "@material-ui/lab/Alert";
+import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 
 import DriverSelect from "./DriverSelect";
 import {
@@ -32,6 +34,21 @@ import { extendMoment } from "moment-range";
 const moment = extendMoment(Moment);
 moment().format();
 
+/**
+ * TODO *
+ * ! If new tasks conflicts, give option to OVERWRITE old task
+ * ? If updating a task causes it to conflict with another task, give option to OVERWRITE old task
+ * [x] Task cannot span multiple days
+ */
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
+}));
+
 function Week({
   appointments,
   addAppointment,
@@ -39,11 +56,17 @@ function Week({
   deleteAppointment,
   drivers,
 }) {
+  const classes = useStyles();
+
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
 
   const [currentDate, setCurrentDate] = useState(Date.now());
-  const [error, setErrors] = useState({});
+  const [errors, setErrors] = useState({});
+  const [taskToOverwrite, setTaskToOverwrite] = useState({
+    newAppointment: {},
+    oldAppointment: {},
+  });
 
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
@@ -52,23 +75,31 @@ function Week({
   const commitChanges = ({ added, changed, deleted }) => {
     const errors = {};
 
-    let startDate, endDate;
+    let startDate, endDate, newAppointment;
     if (added) {
+      if (!added.title) added.title = "Pickup";
+
       startDate = added.startDate;
       endDate = added.endDate;
+      newAppointment = added;
     } else if (changed) {
       startDate = changed.startDate;
       endDate = changed.endDate;
+      newAppointment = changed;
     }
 
     const newAppointmentRange = moment.range(startDate, endDate);
 
-    data.forEach(appointment => {
-      const { startDate, endDate } = appointment;
+    // BUG - when deleting appts, "tasks cannot overlap" appears
+    data.forEach(oldAppointment => {
+      const { startDate, endDate } = oldAppointment;
 
       const oldAppointmentRange = moment.range(startDate, endDate);
+
       if (newAppointmentRange.overlaps(oldAppointmentRange)) {
-        errors.overlap = "Tasks cannot overlap";
+        errors.overlap = `Tasks cannot overlap. Would you like to overwrite the old task?  `;
+
+        setTaskToOverwrite({ oldAppointment, newAppointment });
 
         setErrors(errors);
       }
@@ -81,8 +112,6 @@ function Week({
     }
 
     if (added) {
-      if (!added.title) added.title = "Pickup";
-
       if (Object.keys(errors).length === 0) {
         setErrors({});
         addAppointment({ added, currentDriver });
@@ -109,6 +138,19 @@ function Week({
       return null;
     }
     return <AppointmentForm.TextEditor {...props} />;
+  };
+
+  const replaceOverlappingTask = () => {
+    deleteAppointment({
+      deleted: taskToOverwrite.oldAppointment.id,
+      currentDriver,
+    });
+
+    addAppointment({ added: taskToOverwrite.newAppointment, currentDriver });
+
+    setErrors({});
+
+    setTaskToOverwrite({ newAppointment: {}, oldAppointment: {} });
   };
 
   const CommandLayout = ({ onCommitButtonClick, ...rest }) => {
@@ -176,8 +218,19 @@ function Week({
         <TodayButton />
         <ConfirmationDialog />
         <Appointments />
-        {error.sameDay && <Alert severity="error">{error.sameDay}</Alert>}
-        {error.overlap && <Alert severity="error">{error.overlap}</Alert>}
+        {errors.sameDay && <Alert severity="errors">{errors.sameDay}</Alert>}
+        {errors.overlap && (
+          <Alert severity="error">
+            {errors.overlap}
+            <Button
+              onClick={replaceOverlappingTask}
+              variant="contained"
+              color="secondary"
+            >
+              Overwrite
+            </Button>
+          </Alert>
+        )}
         <AppointmentTooltip showOpenButton showDeleteButton />
         <AppointmentForm
           basicLayoutComponent={BasicLayout}
@@ -202,10 +255,3 @@ export default connect(mapStateToProps, {
   editAppointment,
   deleteAppointment,
 })(Week);
-
-/**
- * TODO *
- * ! If new tasks conflicts, give option to delete old task
- * ? If updating a task causes it to conflict with another task, give option to delete old task
- * [x] Task cannot span multiple days
- */
