@@ -50,14 +50,12 @@ function Week({
     oldAppointments: [],
   });
 
-  console.log("tasksToOverwrite :>> ", tasksToOverwrite);
-
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
   };
 
   const commitChanges = ({ added, changed, deleted }) => {
-    const errors = {};
+    const error = {};
 
     let startDate, endDate, newAppointment;
     if (added) {
@@ -85,11 +83,11 @@ function Week({
             oldAppointmentRange.overlaps(newAppointmentRange)) &&
           Number(Object.keys(newAppointment)[0]) !== oldAppointment.id
         ) {
-          errors.overlap = `Tasks cannot overlap. Would you like to overwrite the old task(s)?  `;
+          error.overlap = `Tasks cannot overlap. Would you like to overwrite the old task(s)?  `;
 
           oldAppointments.push(oldAppointment);
 
-          setErrors(errors);
+          setErrors({ ...errors, error });
         }
       });
 
@@ -97,9 +95,9 @@ function Week({
     }
 
     if (!moment(startDate).isSame(endDate, "day")) {
-      errors.sameDay = "A task can't go into the next day";
+      error.sameDay = "A task can't go into the next day";
 
-      setErrors(errors);
+      setErrors({ ...errors, error });
     }
 
     /**
