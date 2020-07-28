@@ -27,7 +27,9 @@ import {
   deleteAppointment,
 } from "../redux/actions/appointmentActions";
 
-import moment from "moment";
+import Moment from "moment";
+import { extendMoment } from "moment-range";
+const moment = extendMoment(Moment);
 moment().format();
 
 function Week({
@@ -46,23 +48,6 @@ function Week({
 
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
-  };
-
-  const checkErrorsAndCommitChanges = () => {};
-
-  const checkErrors = appointment => {
-    const { startDate, endDate } = appointment;
-    const errors = {};
-
-    if (!moment(startDate).isSame(endDate, "day")) {
-      errors.sameDay = "A task can't go into the next day";
-
-      setErrors(errors);
-      return true;
-    } else {
-      setErrors({});
-      return false;
-    }
   };
 
   const commitChanges = ({ added, changed, deleted }) => {
@@ -102,48 +87,6 @@ function Week({
     return <AppointmentForm.TextEditor {...props} />;
   };
 
-  const changeAddedAppointment = ({ appointmentData }) => {
-    console.log("appointmentData :>> ", appointmentData);
-    // const errors = {};
-
-    // const { startDate, endDate } = appointment;
-
-    // if (!moment(startDate).isSame(endDate, "day")) {
-    //   errors.sameDay = "A task can't go into the next day";
-
-    //   setErrors(errors);
-    // } else {
-    //   setErrors({});
-    // }
-  };
-
-  // const DateComponent = ({ onFieldChange, onValueChange, value, ...rest }) => {
-  //   // console.log("value2 :>> ", value);
-  //   // console.log('{...rest} :>> ', {...rest});
-  //   const compareValues = newValue => {
-  //     const errors = {};
-  //     // console.log("onValueChange :>> ", onValueChange);
-  //     // console.log("value2", newValue);
-  //     // console.log("value :>> ", value);
-  //     if (!moment(value).isSame(newValue, "day")) {
-  //       errors.sameDay = "A task can't go into the next day";
-
-  //       setErrors(errors);
-  //     } else {
-  //       onValueChange(newValue)
-  //       setErrors({});
-  //     }
-  //   };
-  //   // console.log("onValueChange :>> ", onValueChange);
-  //   return (
-  //     <AppointmentForm.DateEditor
-  //       {...rest}
-  //       onValueChange={compareValues}
-  //       value={value}
-  //     />
-  //   );
-  // };
-
   const CommandLayout = ({ onCommitButtonClick, ...rest }) => {
     return (
       <AppointmentForm.CommandLayout
@@ -153,23 +96,7 @@ function Week({
     );
   };
 
-  // const changeAppointmentChanges =(appointmentChanges) => {
-  //   console.log('appointmentChanges', appointmentChanges)
-  //   setAppointment(appointmentChanges)
-  // }
-
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
-    // console.log("appointmentData :>> ", appointmentData);
-
-    // const { startDate, endDate } = appointmentData;
-    // if (!moment(startDate).isSame(endDate, "day")) {
-    //   console.log("wrong");
-    //   errors.sameDay = "A task can't go into the next day";
-
-    //   setErrors(errors);
-    // } else {
-    //   setErrors({});
-    // }
     const onDispatchChange = title => {
       onFieldChange({ title });
     };
@@ -215,23 +142,13 @@ function Week({
           currentDate={currentDate}
           onCurrentDateChange={currentDateChange}
         />
-        <EditingState
-          onCommitChanges={commitChanges}
-          // onAppointmentChangesChange={changeAppointmentChanges}
-          // appointmentChanges={appointment}
-
-          // addedAppointment={appointment.addedAppointment}
-          // onAddedAppointmentChange={changeAddedAppointment}
-          // onAppointmentChangesChange={changeAppointmentChanges}
-          // editingAppointmentId={appointment.editingAppointmentId}
-          // onEditingAppointmentIdChange={changeEditingAppointment}
-        />
+        <EditingState onCommitChanges={commitChanges} />
         <IntegratedEditing />
         <WeekView startDayHour={0} endDayHour={24} />
         <Toolbar />
         <DateNavigator />
         <DriverSelect />
-        
+
         <TodayButton />
         <ConfirmationDialog />
         <Appointments />
@@ -244,19 +161,6 @@ function Week({
           booleanEditorComponent={() => null}
           messages={messages}
           commandLayoutComponent={CommandLayout}
-          // dateEditorComponent={DateComponent}
-          // onAppointmentDataChange={() => changeAddedAppointment}
-          // onAppointmentDataChange={() => changeAddedAppointment}
-          // weeklyRecurrenceSelectorComponent={weeklyRecurrence}
-          // recurrenceLayoutComponent={() => null}
-          // commandButtonComponent={() => null}
-          // dateEditorComponent={() => null}
-          // Hides radio boxes
-          // commandLayoutComponent={() => null}
-          // labelComponent={() => null}
-          // selectComponent={() => null}
-          // resourceEditorComponent={() => null}
-          // selectComponent={selectProps}
         />
       </Scheduler>
     </Paper>
@@ -278,5 +182,5 @@ export default connect(mapStateToProps, {
  * TODO *
  * ! If new tasks conflicts, give option to delete old task
  * ? If updating a task causes it to conflict with another task, give option to delete old task
- * * Task cannot span multiple days
+ * [x] Task cannot span multiple days
  */
