@@ -19,7 +19,6 @@ import {
 } from "@devexpress/dx-react-scheduler-material-ui";
 
 import Alert from "@material-ui/lab/Alert";
-import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 
 import DriverSelect from "./DriverSelect";
@@ -36,18 +35,10 @@ moment().format();
 
 /**
  * TODO *
- * ! If new tasks conflicts, give option to OVERWRITE old task
- * ? If updating a task causes it to conflict with another task, give option to OVERWRITE old task
+ * [x] If new tasks conflicts, give option to OVERWRITE old task
+ * [x] If updating a task causes it to conflict with another task, give option to OVERWRITE old task
  * [x] Task cannot span multiple days
  */
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
-}));
 
 function Week({
   appointments,
@@ -56,8 +47,6 @@ function Week({
   deleteAppointment,
   drivers,
 }) {
-  const classes = useStyles();
-
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
 
@@ -68,10 +57,62 @@ function Week({
     oldAppointment: {},
   });
 
+  console.log("taskToOverwrite :>> ", taskToOverwrite);
+
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
   };
 
+  /*   case ADD_APPOINTMENT:
+      const currentDriverId = action.payload.currentDriver;
+      const newAppointmentState = [...state[currentDriverId]];
+
+      const startingAddedId =
+        newAppointmentState.length > 0
+          ? newAppointmentState[newAppointmentState.length - 1].id + 1
+          : 0;
+
+      newAppointmentState.push({
+        id: startingAddedId,
+        ...action.payload.added,
+      });
+
+      console.log('newAppointmentState :>> ', newAppointmentState);
+
+      return {
+        ...state,
+        [currentDriverId]: newAppointmentState,
+      };
+    case EDIT_APPOINTMENT:
+      // TODO - refactor logic back into WeekView
+      const { currentDriver, changed } = action.payload;
+
+      const updatedAppointments = state[currentDriver].map(appointment => {
+        return changed[appointment.id]
+          ? { ...appointment, ...changed[appointment.id] }
+          : appointment;
+      });
+
+      return { ...state, [currentDriver]: updatedAppointments };
+    case DELETE_APPOINTMENT:
+      const { deleted } = action.payload;
+      const currentDriverID = action.payload.currentDriver;
+
+      const updatedAppointmentsAgain = state[currentDriverID].filter(
+        appointment => appointment.id !== deleted
+      );
+      
+      console.log('deleted :>> ', deleted);
+        console.log('currentDriverID :>> ', currentDriverID );
+
+        console.log('updatedAppointmentsAgain :>> ', updatedAppointmentsAgain);
+
+        console.log('state :>> ', state);
+      return {
+        ...state,
+        [currentDriverID]: updatedAppointmentsAgain,
+      };
+       */
   const commitChanges = ({ added, changed, deleted }) => {
     const errors = {};
 
@@ -87,23 +128,27 @@ function Week({
       endDate = changed.endDate;
       newAppointment = changed;
     }
-
     const newAppointmentRange = moment.range(startDate, endDate);
 
-    // BUG - when deleting appts, "tasks cannot overlap" appears
-    data.forEach(oldAppointment => {
-      const { startDate, endDate } = oldAppointment;
+    if (deleted === undefined) {
+      data.forEach(oldAppointment => {
+        const { startDate, endDate } = oldAppointment;
 
-      const oldAppointmentRange = moment.range(startDate, endDate);
+        const oldAppointmentRange = moment.range(startDate, endDate);
 
-      if (newAppointmentRange.overlaps(oldAppointmentRange)) {
-        errors.overlap = `Tasks cannot overlap. Would you like to overwrite the old task?  `;
+        if (
+          (newAppointmentRange.overlaps(oldAppointmentRange) ||
+            oldAppointmentRange.overlaps(newAppointmentRange)) &&
+          Number(Object.keys(newAppointment)[0]) !== oldAppointment.id
+        ) {
+          errors.overlap = `Tasks cannot overlap. Would you like to overwrite the old task?  `;
 
-        setTaskToOverwrite({ oldAppointment, newAppointment });
+          setTaskToOverwrite({ oldAppointment, newAppointment });
 
-        setErrors(errors);
-      }
-    });
+          setErrors(errors);
+        }
+      });
+    }
 
     if (!moment(startDate).isSame(endDate, "day")) {
       errors.sameDay = "A task can't go into the next day";
@@ -146,7 +191,16 @@ function Week({
       currentDriver,
     });
 
-    addAppointment({ added: taskToOverwrite.newAppointment, currentDriver });
+    // When an appointment is being changed (will only ever have id key)
+    if (Object.keys(taskToOverwrite.newAppointment).length === 1) {
+      editAppointment({
+        changed: taskToOverwrite.newAppointment,
+        currentDriver,
+      });
+    } else {
+      // When a new appointment is being added (will always have more than 1 key)
+      addAppointment({ added: taskToOverwrite.newAppointment, currentDriver });
+    }
 
     setErrors({});
 
