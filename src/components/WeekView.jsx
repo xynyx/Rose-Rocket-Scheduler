@@ -45,10 +45,12 @@ function Week({
 
   const [currentDate, setCurrentDate] = useState(Date.now());
   const [errors, setErrors] = useState({});
-  const [taskToOverwrite, setTaskToOverwrite] = useState({
+  const [tasksToOverwrite, setTasksToOverwrite] = useState({
     newAppointment: {},
-    oldAppointment: {},
+    oldAppointments: [],
   });
+
+  console.log("tasksToOverwrite :>> ", tasksToOverwrite);
 
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
@@ -72,6 +74,7 @@ function Week({
     const newAppointmentRange = moment.range(startDate, endDate);
 
     if (deleted === undefined) {
+      let oldAppointments = [];
       data.forEach(oldAppointment => {
         const { startDate, endDate } = oldAppointment;
 
@@ -82,13 +85,15 @@ function Week({
             oldAppointmentRange.overlaps(newAppointmentRange)) &&
           Number(Object.keys(newAppointment)[0]) !== oldAppointment.id
         ) {
-          errors.overlap = `Tasks cannot overlap. Would you like to overwrite the old task?  `;
+          errors.overlap = `Tasks cannot overlap. Would you like to overwrite the old task(s)?  `;
 
-          setTaskToOverwrite({ oldAppointment, newAppointment });
+          oldAppointments.push(oldAppointment);
 
           setErrors(errors);
         }
       });
+
+      setTasksToOverwrite({ oldAppointments, newAppointment });
     }
 
     if (!moment(startDate).isSame(endDate, "day")) {
@@ -104,20 +109,6 @@ function Week({
       if (Object.keys(errors).length === 0) {
         setErrors({});
         addAppointment({ added, currentDriver });
-
-        /*         const newAppointmentState = [...data];
-
-        const startingAddedId =
-          newAppointmentState.length > 0
-            ? newAppointmentState[newAppointmentState.length - 1].id + 1
-            : 0;
-
-        newAppointmentState.push({
-          id: startingAddedId,
-          ...added,
-        });
-
-        addAppointment({ [currentDriver]: newAppointmentState }); */
       }
     }
 
@@ -151,25 +142,27 @@ function Week({
   };
 
   const replaceOverlappingTask = () => {
-    deleteAppointment({
-      deleted: taskToOverwrite.oldAppointment.id,
-      currentDriver,
+    tasksToOverwrite.oldAppointments.forEach(oldAppointment => {
+      deleteAppointment({
+        deleted: oldAppointment.id,
+        currentDriver,
+      });
     });
 
     // When an appointment is being changed (will only ever have id key)
-    if (Object.keys(taskToOverwrite.newAppointment).length === 1) {
+    if (Object.keys(tasksToOverwrite.newAppointment).length === 1) {
       editAppointment({
-        changed: taskToOverwrite.newAppointment,
+        changed: tasksToOverwrite.newAppointment,
         currentDriver,
       });
     } else {
       // When a new appointment is being added (will always have more than 1 key)
-      addAppointment({ added: taskToOverwrite.newAppointment, currentDriver });
+      addAppointment({ added: tasksToOverwrite.newAppointment, currentDriver });
     }
 
     setErrors({});
 
-    setTaskToOverwrite({ newAppointment: {}, oldAppointment: {} });
+    setTasksToOverwrite({ newAppointment: {}, oldAppointment: {} });
   };
 
   const CommandLayout = ({ onCommitButtonClick, ...rest }) => {
