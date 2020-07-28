@@ -18,12 +18,17 @@ import {
   AppointmentForm,
 } from "@devexpress/dx-react-scheduler-material-ui";
 
+import Alert from "@material-ui/lab/Alert";
+
 import DriverSelect from "./DriverSelect";
 import {
   addAppointment,
   editAppointment,
   deleteAppointment,
 } from "../redux/actions/appointmentActions";
+
+import moment from "moment";
+moment().format();
 
 function Week({
   appointments,
@@ -32,22 +37,52 @@ function Week({
   deleteAppointment,
   drivers,
 }) {
-  console.log("appointments :>> ", appointments);
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
 
+  const [appointment, setAppointment] = useState({});
   const [currentDate, setCurrentDate] = useState(Date.now());
+  const [error, setErrors] = useState({});
 
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
   };
 
+  const checkErrorsAndCommitChanges = () => {};
+
+  const checkErrors = appointment => {
+    const { startDate, endDate } = appointment;
+    const errors = {};
+
+    if (!moment(startDate).isSame(endDate, "day")) {
+      errors.sameDay = "A task can't go into the next day";
+
+      setErrors(errors);
+      return true;
+    } else {
+      setErrors({});
+      return false;
+    }
+  };
+
   const commitChanges = ({ added, changed, deleted }) => {
+    const errors = {};
+
+    const { startDate, endDate } = added;
     if (added) {
       if (!added.title) added.title = "Pickup";
 
-      addAppointment({ added, currentDriver });
+      // console.log("value :>> ", value);
+      if (!moment(startDate).isSame(endDate, "day")) {
+        errors.sameDay = "A task can't go into the next day";
+
+        setErrors(errors);
+      } else {
+        setErrors({});
+        addAppointment({ added, currentDriver });
+      }
     }
+
     if (changed) {
       editAppointment({ changed, currentDriver });
     }
@@ -67,7 +102,74 @@ function Week({
     return <AppointmentForm.TextEditor {...props} />;
   };
 
+  const changeAddedAppointment = ({ appointmentData }) => {
+    console.log("appointmentData :>> ", appointmentData);
+    // const errors = {};
+
+    // const { startDate, endDate } = appointment;
+
+    // if (!moment(startDate).isSame(endDate, "day")) {
+    //   errors.sameDay = "A task can't go into the next day";
+
+    //   setErrors(errors);
+    // } else {
+    //   setErrors({});
+    // }
+  };
+
+  // const DateComponent = ({ onFieldChange, onValueChange, value, ...rest }) => {
+  //   // console.log("value2 :>> ", value);
+  //   // console.log('{...rest} :>> ', {...rest});
+  //   const compareValues = newValue => {
+  //     const errors = {};
+  //     // console.log("onValueChange :>> ", onValueChange);
+  //     // console.log("value2", newValue);
+  //     // console.log("value :>> ", value);
+  //     if (!moment(value).isSame(newValue, "day")) {
+  //       errors.sameDay = "A task can't go into the next day";
+
+  //       setErrors(errors);
+  //     } else {
+  //       onValueChange(newValue)
+  //       setErrors({});
+  //     }
+  //   };
+  //   // console.log("onValueChange :>> ", onValueChange);
+  //   return (
+  //     <AppointmentForm.DateEditor
+  //       {...rest}
+  //       onValueChange={compareValues}
+  //       value={value}
+  //     />
+  //   );
+  // };
+
+  const CommandLayout = ({ onCommitButtonClick, ...rest }) => {
+    return (
+      <AppointmentForm.CommandLayout
+        onCommitButtonClick={onCommitButtonClick}
+        {...rest}
+      />
+    );
+  };
+
+  // const changeAppointmentChanges =(appointmentChanges) => {
+  //   console.log('appointmentChanges', appointmentChanges)
+  //   setAppointment(appointmentChanges)
+  // }
+
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
+    // console.log("appointmentData :>> ", appointmentData);
+
+    // const { startDate, endDate } = appointmentData;
+    // if (!moment(startDate).isSame(endDate, "day")) {
+    //   console.log("wrong");
+    //   errors.sameDay = "A task can't go into the next day";
+
+    //   setErrors(errors);
+    // } else {
+    //   setErrors({});
+    // }
     const onDispatchChange = title => {
       onFieldChange({ title });
     };
@@ -79,8 +181,6 @@ function Week({
     appointmentData.title = appointmentData.title
       ? appointmentData.title
       : "Pickup";
-
-    console.log("appointmentData :>> ", appointmentData);
 
     return (
       <AppointmentForm.BasicLayout
@@ -117,6 +217,9 @@ function Week({
         />
         <EditingState
           onCommitChanges={commitChanges}
+          // onAppointmentChangesChange={changeAppointmentChanges}
+          // appointmentChanges={appointment}
+
           // addedAppointment={appointment.addedAppointment}
           // onAddedAppointmentChange={changeAddedAppointment}
           // onAppointmentChangesChange={changeAppointmentChanges}
@@ -128,9 +231,11 @@ function Week({
         <Toolbar />
         <DateNavigator />
         <DriverSelect />
+        
         <TodayButton />
         <ConfirmationDialog />
         <Appointments />
+        {error.sameDay && <Alert severity="error">{error.sameDay}</Alert>}
         <AppointmentTooltip showOpenButton showDeleteButton />
         <AppointmentForm
           basicLayoutComponent={BasicLayout}
@@ -138,6 +243,20 @@ function Week({
           // Hides radio boxes
           booleanEditorComponent={() => null}
           messages={messages}
+          commandLayoutComponent={CommandLayout}
+          // dateEditorComponent={DateComponent}
+          // onAppointmentDataChange={() => changeAddedAppointment}
+          // onAppointmentDataChange={() => changeAddedAppointment}
+          // weeklyRecurrenceSelectorComponent={weeklyRecurrence}
+          // recurrenceLayoutComponent={() => null}
+          // commandButtonComponent={() => null}
+          // dateEditorComponent={() => null}
+          // Hides radio boxes
+          // commandLayoutComponent={() => null}
+          // labelComponent={() => null}
+          // selectComponent={() => null}
+          // resourceEditorComponent={() => null}
+          // selectComponent={selectProps}
         />
       </Scheduler>
     </Paper>
@@ -154,3 +273,10 @@ export default connect(mapStateToProps, {
   editAppointment,
   deleteAppointment,
 })(Week);
+
+/**
+ * TODO *
+ * ! If new tasks conflicts, give option to delete old task
+ * ? If updating a task causes it to conflict with another task, give option to delete old task
+ * * Task cannot span multiple days
+ */
