@@ -1,16 +1,20 @@
 {
-  "name": "api",
+  "name": "rose-rocket",
   "version": "1.0.0",
-  "description": "",
+  "description": "Driver Scheduling App",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "client": "npm start --prefix client",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon --inspect server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Matt Taylor",
   "license": "ISC",
   "dependencies": {
-    "concurrently": "^5.2.0"
+    "concurrently": "^5.2.0",
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
