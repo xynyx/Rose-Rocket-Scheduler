@@ -42,7 +42,6 @@ function Week({
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
 
-  const [appointment, setAppointment] = useState({});
   const [currentDate, setCurrentDate] = useState(Date.now());
   const [error, setErrors] = useState({});
 
@@ -53,23 +52,48 @@ function Week({
   const commitChanges = ({ added, changed, deleted }) => {
     const errors = {};
 
-    const { startDate, endDate } = added;
+    let startDate, endDate;
+    if (added) {
+      startDate = added.startDate;
+      endDate = added.endDate;
+    } else if (changed) {
+      startDate = changed.startDate;
+      endDate = changed.endDate;
+    }
+
+    const newAppointmentRange = moment.range(startDate, endDate);
+
+    data.forEach(appointment => {
+      const { startDate, endDate } = appointment;
+
+      const oldAppointmentRange = moment.range(startDate, endDate);
+      if (newAppointmentRange.overlaps(oldAppointmentRange)) {
+        errors.overlap = "Tasks cannot overlap";
+
+        setErrors(errors);
+      }
+    });
+
+    if (!moment(startDate).isSame(endDate, "day")) {
+      errors.sameDay = "A task can't go into the next day";
+
+      setErrors(errors);
+    }
+
     if (added) {
       if (!added.title) added.title = "Pickup";
 
-      // console.log("value :>> ", value);
-      if (!moment(startDate).isSame(endDate, "day")) {
-        errors.sameDay = "A task can't go into the next day";
-
-        setErrors(errors);
-      } else {
+      if (Object.keys(errors).length === 0) {
         setErrors({});
         addAppointment({ added, currentDriver });
       }
     }
 
     if (changed) {
-      editAppointment({ changed, currentDriver });
+      if (Object.keys(errors).length === 0) {
+        setErrors({});
+        editAppointment({ changed, currentDriver });
+      }
     }
     if (deleted !== undefined) {
       deleteAppointment({ deleted, currentDriver });
@@ -153,6 +177,7 @@ function Week({
         <ConfirmationDialog />
         <Appointments />
         {error.sameDay && <Alert severity="error">{error.sameDay}</Alert>}
+        {error.overlap && <Alert severity="error">{error.overlap}</Alert>}
         <AppointmentTooltip showOpenButton showDeleteButton />
         <AppointmentForm
           basicLayoutComponent={BasicLayout}
