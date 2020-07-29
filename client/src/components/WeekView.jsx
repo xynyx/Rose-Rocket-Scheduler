@@ -28,6 +28,8 @@ import {
   deleteAppointment,
 } from "../redux/actions/appointmentActions";
 
+import { setErrors } from "../redux/actions/errorActions";
+
 import Moment from "moment";
 import { extendMoment } from "moment-range";
 const moment = extendMoment(Moment);
@@ -39,24 +41,26 @@ function Week({
   editAppointment,
   deleteAppointment,
   drivers,
+  errors,
+  setErrors,
 }) {
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
 
   const [currentDate, setCurrentDate] = useState(Date.now());
-  const [errors, setErrors] = useState({});
+  // const [errors, setErrors] = useState({});
   const [tasksToOverwrite, setTasksToOverwrite] = useState({
     newAppointment: {},
     oldAppointments: [],
   });
+  const [error, setError] = useState({});
 
+  // console.log("errors :>> ", errors);
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
   };
 
   const commitChanges = ({ added, changed, deleted }) => {
-    const error = {};
-
     let startDate, endDate, newAppointment;
     if (added) {
       if (!added.title) added.title = "Pickup";
@@ -70,6 +74,8 @@ function Week({
       newAppointment = changed;
     }
     const newAppointmentRange = moment.range(startDate, endDate);
+
+    const error = {};
 
     if (deleted === undefined) {
       let oldAppointments = [];
@@ -87,7 +93,7 @@ function Week({
 
           oldAppointments.push(oldAppointment);
 
-          setErrors({ ...errors, error });
+          setErrors(error, () => updateAppointments());
         }
       });
 
@@ -97,34 +103,37 @@ function Week({
     if (!moment(startDate).isSame(endDate, "day")) {
       error.sameDay = "A task can't go into the next day";
 
-      setErrors({ ...errors, error });
+      setErrors(error, () => updateAppointments());
     }
 
-    /**
-     *
-     */
-    if (added) {
+    const updateAppointments = () => {
       if (Object.keys(errors).length === 0) {
-        setErrors({});
-        addAppointment({ added, currentDriver });
+        /**
+         *
+         */
+        if (added) {
+          setErrors({});
+          addAppointment({ added, currentDriver });
+        }
+        /**
+         *
+         */
+        if (changed) {
+          setErrors({});
+          editAppointment({ changed, currentDriver });
+        }
       }
-    }
 
-    /**
-     *
-     */
-    if (changed) {
-      if (Object.keys(errors).length === 0) {
-        setErrors({});
-        editAppointment({ changed, currentDriver });
+      /**
+       *
+       */
+      if (deleted !== undefined) {
+        deleteAppointment({ deleted, currentDriver });
       }
-    }
+    };
 
-    /**
-     *
-     */
-    if (deleted !== undefined) {
-      deleteAppointment({ deleted, currentDriver });
+    if (Object.keys(error).length === 0) {
+      updateAppointments();
     }
   };
 
@@ -258,10 +267,12 @@ function Week({
 const mapStateToProps = state => ({
   appointments: state.appointments,
   drivers: state.drivers,
+  errors: state.errors,
 });
 
 export default connect(mapStateToProps, {
   addAppointment,
   editAppointment,
   deleteAppointment,
+  setErrors,
 })(Week);
