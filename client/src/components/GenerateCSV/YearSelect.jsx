@@ -5,7 +5,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import { connect } from "react-redux";
 
 import moment from "moment";
 moment().format();
@@ -40,7 +39,7 @@ export default function YearSelect({ setDownloadYear, year }) {
       years.push(i);
     }
 
-    return years.map(year => (
+    return years.reverse().map(year => (
       <MenuItem key={year} value={year}>
         {year}
       </MenuItem>

@@ -5,8 +5,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import { connect } from "react-redux";
-
 
 const useStyles = makeStyles(theme => ({
   formControl: {
