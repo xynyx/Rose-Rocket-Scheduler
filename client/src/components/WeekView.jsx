@@ -48,17 +48,15 @@ function Week({
   const data = appointments[currentDriver];
 
   const [currentDate, setCurrentDate] = useState(Date.now());
-  // const [errors, setErrors] = useState({});
   const [tasksToOverwrite, setTasksToOverwrite] = useState({
     newAppointment: {},
     oldAppointments: [],
   });
-  const [error, setError] = useState({});
 
-  // console.log("errors :>> ", errors);
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
   };
+
 
   const commitChanges = ({ added, changed, deleted }) => {
     let startDate, endDate, newAppointment;
@@ -78,7 +76,7 @@ function Week({
     const error = {};
 
     if (deleted === undefined) {
-      let oldAppointments = [];
+      const oldAppointments = [];
       data.forEach(oldAppointment => {
         const { startDate, endDate } = oldAppointment;
 
@@ -93,7 +91,7 @@ function Week({
 
           oldAppointments.push(oldAppointment);
 
-          setErrors(error, () => updateAppointments());
+          setErrors(error);
         }
       });
 
@@ -103,37 +101,32 @@ function Week({
     if (!moment(startDate).isSame(endDate, "day")) {
       error.sameDay = "A task can't go into the next day";
 
-      setErrors(error, () => updateAppointments());
+      setErrors(error);
     }
 
-    const updateAppointments = () => {
-      if (Object.keys(errors).length === 0) {
-        /**
-         *
-         */
-        if (added) {
-          setErrors({});
-          addAppointment({ added, currentDriver });
-        }
-        /**
-         *
-         */
-        if (changed) {
-          setErrors({});
-          editAppointment({ changed, currentDriver });
-        }
-      }
+    if (Object.keys(error).length === 0) {
+      console.log('error :>> ', error);
+      setErrors({});
 
       /**
        *
        */
-      if (deleted !== undefined) {
-        deleteAppointment({ deleted, currentDriver });
+      if (added) {
+        addAppointment({ added, currentDriver });
       }
-    };
+      /**
+       *
+       */
+      if (changed) {
+        editAppointment({ changed, currentDriver });
+      }
+    }
 
-    if (Object.keys(error).length === 0) {
-      updateAppointments();
+    /**
+     *
+     */
+    if (deleted !== undefined) {
+      deleteAppointment({ deleted, currentDriver });
     }
   };
 
@@ -167,10 +160,13 @@ function Week({
       addAppointment({ added: tasksToOverwrite.newAppointment, currentDriver });
     }
 
-    setErrors({});
-
     setTasksToOverwrite({ newAppointment: {}, oldAppointments: [] });
   };
+
+  // useEffect(() => {
+  //   setErrors({})
+  // }, [replaceOverlappingTask()])
+
 
   const CommandLayout = ({ onCommitButtonClick, ...rest }) => {
     return (
@@ -237,7 +233,7 @@ function Week({
         <TodayButton />
         <ConfirmationDialog />
         <Appointments />
-        {errors.sameDay && <Alert severity="errors">{errors.sameDay}</Alert>}
+        {errors.sameDay && <Alert severity="error">{errors.sameDay}</Alert>}
         {errors.overlap && (
           <Alert severity="error">
             {errors.overlap}
