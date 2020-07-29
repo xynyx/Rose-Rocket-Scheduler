@@ -23,7 +23,6 @@ const csvWriter = createCsvWriter({
 router.post("/", (req, res) => {
   const { data } = req.body;
 
-  console.log("data :>> ", data);
 
   // data.sort((a, b) => moment(a.startDate) - moment(b.startDate));
 
@@ -41,7 +40,6 @@ router.post("/", (req, res) => {
 
     let day = 1;
     /*     while (moment(startingDate).isBefore(endingDate)) { */
-    const startingDateCopy = startingDate.clone();
 
     const generateIntervalObject = () => {
       const intervalObject = {
@@ -54,7 +52,11 @@ router.post("/", (req, res) => {
       // for (let i = 0; i < interval; i++) {
       // const copiedStartDate = startingDateCopy.clone();
       // console.log("***********");
+    const startingDateCopy = startingDate.clone();
+
       data.forEach(appointment => {
+
+
         const { title } = appointment;
         const startDate = moment(appointment.startDate);
 
@@ -89,10 +91,16 @@ router.post("/", (req, res) => {
         // );
 
         // moment("12-25-1995", "MM-DD-YYYY");
-        console.log(moment("12-25-1995", "MM-DD-YYYY"));
+        // console.log(moment("12-25-1995", "MM-DD-YYYY"));
+// 
 
+console.log('start :>> ', start);
+console.log('end :>> ', end);
+        // console.log('appointment:>> ', appointment, `\n`, "startDate", startDate);
         if (startDate.isBetween(start, end)) {
-          console.log("HERE!");
+          console.log('start :>> ', start);
+          console.log('end :>> ', end);
+          console.log('********************88:>> ', appointment);
           if (title === "Pickup") pickup++;
           if (title === "Dropoff") dropoff++;
           if (title === "Other") other++;
@@ -105,6 +113,8 @@ router.post("/", (req, res) => {
       intervalObject.other = other;
 
       formattedData.push(intervalObject);
+
+      // console.log('formattedData :>> ', formattedData);
     };
 
     // generateIntervalObject();
@@ -118,7 +128,7 @@ router.post("/", (req, res) => {
     // console.log("startingDate :>> ", startingDate);
     // console.log("endingDate :>> ", endingDate);
 
-    while (startingDate.isBefore(endingDate)) {
+    while (startingDate.isBefore(endingDate) && day < 365) {
       // console.log('startingDateINSIDE BFERORE :>> ', startingDate);
       generateIntervalObject();
       day += interval;

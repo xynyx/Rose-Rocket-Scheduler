@@ -12,12 +12,6 @@ const initialState = {
       endDate: new Date(),
       id: 0,
     },
-    {
-      title: "Dropoff",
-      startDate: new Date(),
-      endDate: new Date(),
-      id: 1,
-    },
   ],
   1: [],
   2: [],
