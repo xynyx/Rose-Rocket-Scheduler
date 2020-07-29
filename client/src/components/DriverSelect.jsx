@@ -7,7 +7,6 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { connect } from "react-redux";
 
-import { setDriver } from "../redux/actions/driverActions";
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -16,7 +15,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function DriverSelect({ drivers, setDriver }) {
+export default function DriverSelect({ drivers, setDriver }) {
   const classes = useStyles();
 
   const driverList = drivers.driverList.map(driver => (
@@ -32,21 +31,15 @@ function DriverSelect({ drivers, setDriver }) {
     setDriver(driver.props.name);
   };
   return (
-      <FormControl variant="outlined" className={classes.formControl}>
-        <InputLabel>Drivers</InputLabel>
-        <Select
-          value={drivers.selectedDriver.name}
-          onChange={handleChange}
-          label="Drivers"
-        >
-          {driverList}
-        </Select>
-      </FormControl>
+    <FormControl variant="outlined" className={classes.formControl}>
+      <InputLabel>Drivers</InputLabel>
+      <Select
+        value={drivers.selectedDriver.name}
+        onChange={handleChange}
+        label="Drivers"
+      >
+        {driverList}
+      </Select>
+    </FormControl>
   );
 }
-
-const mapStateToProps = state => ({
-  drivers: state.drivers,
-});
-
-export default connect(mapStateToProps, { setDriver })(DriverSelect);

@@ -29,6 +29,11 @@ import {
   editAppointment,
   deleteAppointment,
 } from "../redux/actions/appointmentActions";
+import { setDriver } from "../redux/actions/driverActions";
+import {
+  setDownloadInterval,
+  setDownloadYear,
+} from "../redux/actions/downloadScheduleActions";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
@@ -41,6 +46,10 @@ function Week({
   editAppointment,
   deleteAppointment,
   drivers,
+  setDriver,
+  setDownloadInterval,
+  downloadScheduleOptions,
+  setDownloadYear,
 }) {
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
@@ -215,8 +224,12 @@ function Week({
         <Toolbar />
         <DateNavigator />
         <div>
-          <DriverSelect />
-          <GenerateCSV/>
+          <DriverSelect drivers={drivers} setDriver={setDriver} />
+          <GenerateCSV
+            setDownloadYear={setDownloadYear}
+            downloadScheduleOptions={downloadScheduleOptions}
+            setDownloadInterval={setDownloadInterval}
+          />
         </div>
 
         <TodayButton />
@@ -251,10 +264,14 @@ function Week({
 const mapStateToProps = state => ({
   appointments: state.appointments,
   drivers: state.drivers,
+  downloadScheduleOptions: state.downloadScheduleOptions,
 });
 
 export default connect(mapStateToProps, {
   addAppointment,
   editAppointment,
   deleteAppointment,
+  setDownloadInterval,
+  setDownloadYear,
+  setDriver,
 })(Week);

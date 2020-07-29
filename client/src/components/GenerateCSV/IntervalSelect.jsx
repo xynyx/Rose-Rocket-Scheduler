@@ -7,6 +7,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { connect } from "react-redux";
 
+
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
@@ -17,21 +18,20 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function DownloadSelect() {
+export default function IntervalSelect({ setDownloadInterval, interval }) {
   const classes = useStyles();
-
-  const [scheduleInterval, setScheduleInterval] = useState(2);
+  console.log('setDownloadInterval :>> ', setDownloadInterval);
 
   const handleChange = e => {
     console.log("e.target :>> ", e.target);
-    setScheduleInterval(e.target.value);
+    setDownloadInterval(e.target.value);
   };
 
   return (
     <FormControl variant="outlined" className={classes.formControl}>
       <InputLabel>Interval (Days)</InputLabel>
       <Select
-        value={scheduleInterval}
+        value={interval}
         onChange={handleChange}
         label="Interval (Days)"
       >

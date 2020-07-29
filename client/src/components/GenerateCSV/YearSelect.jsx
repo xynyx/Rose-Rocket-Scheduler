@@ -26,13 +26,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function YearSelect() {
+export default function YearSelect({ setDownloadYear, year }) {
   const classes = useStyles();
 
-  const [year, setYear] = useState(moment().year());
-
   const handleChange = e => {
-    setYear(e.target.value);
+    setDownloadYear(e.target.value);
   };
 
   const yearList = () => {

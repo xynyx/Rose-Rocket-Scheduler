@@ -1,8 +1,10 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 
 import IntervalSelect from "./IntervalSelect";
 import YearSelect from "./YearSelect";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles({
   root: {
@@ -13,14 +15,23 @@ const useStyles = makeStyles({
   },
 });
 
-export default function GenerateCSV() {
+export default function GenerateCSV({
+  downloadScheduleOptions,
+  setDownloadInterval,
+  setDownloadYear,
+}) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <span>Download Schedule (.csv)</span>
-      <IntervalSelect />
-      <YearSelect />
+      <Button variant="contained" color="primary">
+        Download Schedule
+      </Button>
+      <IntervalSelect
+        interval={downloadScheduleOptions.interval}
+        setDownloadInterval={setDownloadInterval}
+      />
+      <YearSelect year={downloadScheduleOptions.year} setDownloadYear={setDownloadYear} />
     </div>
   );
 }
