@@ -12,6 +12,12 @@ const initialState = {
       endDate: new Date(),
       id: 0,
     },
+    {
+      title: "Dropoff",
+      startDate: new Date(),
+      endDate: new Date(),
+      id: 1,
+    },
   ],
   1: [],
   2: [],
@@ -55,13 +61,13 @@ export default function (state = initialState, action) {
       const updatedAppointmentsAgain = state[currentDriverID].filter(
         appointment => appointment.id !== deleted
       );
-      
-      console.log('deleted :>> ', deleted);
-        console.log('currentDriverID :>> ', currentDriverID );
 
-        console.log('updatedAppointmentsAgain :>> ', updatedAppointmentsAgain);
+      console.log("deleted :>> ", deleted);
+      console.log("currentDriverID :>> ", currentDriverID);
 
-        console.log('state :>> ', state);
+      console.log("updatedAppointmentsAgain :>> ", updatedAppointmentsAgain);
+
+      console.log("state :>> ", state);
       return {
         ...state,
         [currentDriverID]: updatedAppointmentsAgain,

@@ -67,7 +67,6 @@ function SchedulerLayout({
 
   async function generateCSV() {
     try {
-      console.log('data :>> ', data);
       const response = await fetch("/api/csv", {
         method: "post",
         headers: {
@@ -76,9 +75,7 @@ function SchedulerLayout({
         },
         body: JSON.stringify(data),
       });
-      // const json = await response.json()
-      // console.log('json :>> ', json);
-      console.log("data :>> ", response);
+      console.log('response :>> ', response);
     } catch (err) {
       console.log(err);
     }

@@ -23,8 +23,6 @@ export default function GenerateCSV({
 }) {
   const classes = useStyles();
 
-
-
   return (
     <div className={classes.root}>
       <Button onClick={generateCSV} variant="contained" color="primary">
