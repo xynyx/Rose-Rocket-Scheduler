@@ -19,19 +19,25 @@ export default function GenerateCSV({
   downloadScheduleOptions,
   setDownloadInterval,
   setDownloadYear,
+  generateCSV
 }) {
   const classes = useStyles();
 
+
+
   return (
     <div className={classes.root}>
-      <Button variant="contained" color="primary">
+      <Button onClick={generateCSV} variant="contained" color="primary">
         Download Schedule
       </Button>
       <IntervalSelect
         interval={downloadScheduleOptions.interval}
         setDownloadInterval={setDownloadInterval}
       />
-      <YearSelect year={downloadScheduleOptions.year} setDownloadYear={setDownloadYear} />
+      <YearSelect
+        year={downloadScheduleOptions.year}
+        setDownloadYear={setDownloadYear}
+      />
     </div>
   );
 }

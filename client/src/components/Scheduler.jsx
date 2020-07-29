@@ -65,6 +65,25 @@ function SchedulerLayout({
     setCurrentDate(currentDate);
   };
 
+  async function generateCSV() {
+    try {
+      console.log('data :>> ', data);
+      const response = await fetch("/api/csv", {
+        method: "post",
+        headers: {
+          'Accept': 'application/json', 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      });
+      // const json = await response.json()
+      // console.log('json :>> ', json);
+      console.log("data :>> ", response);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   const commitChanges = ({ added, changed, deleted }) => {
     let startDate, endDate, newAppointment;
     if (added) {
@@ -226,6 +245,7 @@ function SchedulerLayout({
         <div>
           <DriverSelect drivers={drivers} setDriver={setDriver} />
           <GenerateCSV
+            generateCSV={generateCSV}
             setDownloadYear={setDownloadYear}
             downloadScheduleOptions={downloadScheduleOptions}
             setDownloadInterval={setDownloadInterval}
