@@ -22,7 +22,7 @@ import Alert from "@material-ui/lab/Alert";
 import Button from "@material-ui/core/Button";
 
 import DriverSelect from "./DriverSelect";
-import DownloadSelect from "./DownloadSelect";
+import GenerateCSV from "./GenerateCSV/GenerateCSV";
 
 import {
   addAppointment,
@@ -216,7 +216,7 @@ function Week({
         <DateNavigator />
         <div>
           <DriverSelect />
-          <DownloadSelect />
+          <GenerateCSV/>
         </div>
 
         <TodayButton />
