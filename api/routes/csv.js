@@ -1,17 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const csv = require("fast-csv");
 const homedir = require("os").homedir();
-const fs = require("fs");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+
+const moment = require("moment");
+moment().format();
 
 const csvWriter = createCsvWriter({
   path: `${homedir}/Schedule.csv`,
   header: [
-    { id: "startDate", title: "START" },
-    { id: "endDate", title: "END" },
-    { id: "id", title: "ID" },
-    { id: "title", title: "TITLE" },
+    { id: "timeframe", title: "TIMEFRAME" },
+    { id: "pickup", title: "PICKUP" },
+    { id: "dropoff", title: "DROPOFF" },
+    { id: "other", title: "OTHER" },
   ],
 });
 /**
@@ -20,29 +21,39 @@ const csvWriter = createCsvWriter({
  */
 
 router.post("/", (req, res) => {
-  csvWriter.writeRecords(req.body).then(() => console.log("done"));
-  // try {
-  //   fastcsv
-  //     // .write(req.body, { headers: true })
-  //     .pipe(ws);
+  const { data } = req.body;
+  console.log('dataB4 :>> ', data);
+  const { interval, year } = req.body.downloadScheduleOptions;
 
-  //   for (const appointment of req.body) {
-  //     fastcsv.write(appointment);
-  //   }
+  const sortedData= data.sort((a, b) => moment(a.startDate) - moment(b.startDate));
+  console.log('sortedData :>> ', sortedData);
 
-  //   fastcsv.end();
-  // } catch (err) {
-  //   res.json(err);
-  // }
-  // csv
-  //   .write(req.body, { headers: true })
-  //   .pipe(ws)
-  //   .on("error", error => console.error(error))
-  //   .on("data", row => console.log(row))
-  //   .on("end", rowCount => console.log(`Parsed ${rowCount} rows`));
+  const formattedData = () => {
+    let startingDate = moment([year]);
+    const endingDate = moment([year + 1]);
+
+    const formattedData = [];
+
+    while (moment(startingDate).isBefore(endingDate)) {
+      console.log('startingDate :>> ', startingDate);
+      // Check first day (jan 1st)
+      // if no appointments fall on that day, the data should look like this (given interval 2):
+      /**
+       * Timeframe: Day 1 - 3
+       * Pickup: 0
+       * Dropoff: 0
+       * Other: 0
+       */
+    }
+  };
+
+
+
+  try {
+    csvWriter.writeRecords(data).then(() => res.json("Success"));
+  } catch (err) {
+    res.json(err);
+  }
 });
 
-// const writeCSV = data => {
-//   const writer =
-// };
 module.exports = router;

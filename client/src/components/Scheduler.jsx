@@ -66,16 +66,24 @@ function SchedulerLayout({
   };
 
   async function generateCSV() {
+    /*   header: [
+    { id: "timeframe", title: "TIMEFRAME" },
+    { id: "pickup", title: "PICKUP" },
+    { id: "dropoff", title: "DROPOFF" },
+    { id: "other", title: "OTHER" },
+  ], */
+
+
     try {
       const response = await fetch("/api/csv", {
         method: "post",
         headers: {
-          'Accept': 'application/json', 
-          'Content-Type': 'application/json'
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ data, downloadScheduleOptions }),
       });
-      console.log('response :>> ', response);
+      console.log("response :>> ", response);
     } catch (err) {
       console.log(err);
     }
