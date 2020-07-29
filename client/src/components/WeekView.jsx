@@ -28,8 +28,6 @@ import {
   deleteAppointment,
 } from "../redux/actions/appointmentActions";
 
-import { setErrors } from "../redux/actions/errorActions";
-
 import Moment from "moment";
 import { extendMoment } from "moment-range";
 const moment = extendMoment(Moment);
@@ -41,13 +39,10 @@ function Week({
   editAppointment,
   deleteAppointment,
   drivers,
-  // errors,
-  // setErrors
 }) {
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
   const [errors, setErrors] = useState({});
-
 
   const [currentDate, setCurrentDate] = useState(Date.now());
   const [tasksToOverwrite, setTasksToOverwrite] = useState({
@@ -58,7 +53,6 @@ function Week({
   const currentDateChange = currentDate => {
     setCurrentDate(currentDate);
   };
-
 
   const commitChanges = ({ added, changed, deleted }) => {
     let startDate, endDate, newAppointment;
@@ -107,7 +101,7 @@ function Week({
     }
 
     if (Object.keys(errors).length === 0) {
-      console.log('errors :>> ', errors);
+      console.log("errors :>> ", errors);
       setErrors({});
 
       /**
@@ -165,20 +159,6 @@ function Week({
     setErrors({});
 
     setTasksToOverwrite({ newAppointment: {}, oldAppointments: [] });
-  };
-
-  // useEffect(() => {
-  //   setErrors({})
-  // }, [replaceOverlappingTask()])
-
-
-  const CommandLayout = ({ onCommitButtonClick, ...rest }) => {
-    return (
-      <AppointmentForm.CommandLayout
-        onCommitButtonClick={onCommitButtonClick}
-        {...rest}
-      />
-    );
   };
 
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
@@ -257,7 +237,6 @@ function Week({
           // Hides radio boxes
           booleanEditorComponent={() => null}
           messages={messages}
-          commandLayoutComponent={CommandLayout}
         />
       </Scheduler>
     </Paper>
