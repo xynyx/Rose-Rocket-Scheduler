@@ -12,10 +12,7 @@ import { setDriver } from "../redux/actions/driverActions";
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
+    minWidth: 200,
   },
 }));
 
@@ -35,7 +32,6 @@ function DriverSelect({ drivers, setDriver }) {
     setDriver(driver.props.name);
   };
   return (
-    <div>
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel>Drivers</InputLabel>
         <Select
@@ -46,7 +42,6 @@ function DriverSelect({ drivers, setDriver }) {
           {driverList}
         </Select>
       </FormControl>
-    </div>
   );
 }
 

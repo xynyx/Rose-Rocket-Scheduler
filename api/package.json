@@ -14,8 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "concurrently": "^5.2.0",
-    "csv-parse": "^4.11.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "fast-csv": "^4.3.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

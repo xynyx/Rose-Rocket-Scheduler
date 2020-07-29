@@ -22,6 +22,8 @@ import Alert from "@material-ui/lab/Alert";
 import Button from "@material-ui/core/Button";
 
 import DriverSelect from "./DriverSelect";
+import DownloadSelect from "./DownloadSelect";
+
 import {
   addAppointment,
   editAppointment,
@@ -212,7 +214,10 @@ function Week({
         <WeekView startDayHour={0} endDayHour={24} />
         <Toolbar />
         <DateNavigator />
-        <DriverSelect />
+        <div>
+          <DriverSelect />
+          <DownloadSelect />
+        </div>
 
         <TodayButton />
         <ConfirmationDialog />
