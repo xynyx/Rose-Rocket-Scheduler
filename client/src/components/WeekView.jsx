@@ -41,11 +41,13 @@ function Week({
   editAppointment,
   deleteAppointment,
   drivers,
-  errors,
-  setErrors,
+  // errors,
+  // setErrors
 }) {
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
+  const [errors, setErrors] = useState({});
+
 
   const [currentDate, setCurrentDate] = useState(Date.now());
   const [tasksToOverwrite, setTasksToOverwrite] = useState({
@@ -73,7 +75,7 @@ function Week({
     }
     const newAppointmentRange = moment.range(startDate, endDate);
 
-    const error = {};
+    const errors = {};
 
     if (deleted === undefined) {
       const oldAppointments = [];
@@ -87,11 +89,11 @@ function Week({
             oldAppointmentRange.overlaps(newAppointmentRange)) &&
           Number(Object.keys(newAppointment)[0]) !== oldAppointment.id
         ) {
-          error.overlap = `Tasks cannot overlap. Would you like to overwrite the old task(s)?  `;
+          errors.overlap = `Tasks cannot overlap. Would you like to overwrite the old task(s)?  `;
 
           oldAppointments.push(oldAppointment);
 
-          setErrors(error);
+          setErrors(errors);
         }
       });
 
@@ -99,13 +101,13 @@ function Week({
     }
 
     if (!moment(startDate).isSame(endDate, "day")) {
-      error.sameDay = "A task can't go into the next day";
+      errors.sameDay = "A task can't go into the next day";
 
-      setErrors(error);
+      setErrors(errors);
     }
 
-    if (Object.keys(error).length === 0) {
-      console.log('error :>> ', error);
+    if (Object.keys(errors).length === 0) {
+      console.log('errors :>> ', errors);
       setErrors({});
 
       /**
@@ -159,6 +161,8 @@ function Week({
       // When a new appointment is being added (will always have more than 1 key)
       addAppointment({ added: tasksToOverwrite.newAppointment, currentDriver });
     }
+
+    setErrors({});
 
     setTasksToOverwrite({ newAppointment: {}, oldAppointments: [] });
   };
@@ -263,12 +267,10 @@ function Week({
 const mapStateToProps = state => ({
   appointments: state.appointments,
   drivers: state.drivers,
-  errors: state.errors,
 });
 
 export default connect(mapStateToProps, {
   addAppointment,
   editAppointment,
   deleteAppointment,
-  setErrors,
 })(Week);
