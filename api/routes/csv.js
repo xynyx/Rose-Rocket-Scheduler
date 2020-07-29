@@ -22,35 +22,64 @@ const csvWriter = createCsvWriter({
 
 router.post("/", (req, res) => {
   const { data } = req.body;
-  console.log('dataB4 :>> ', data);
-  const { interval, year } = req.body.downloadScheduleOptions;
 
-  const sortedData= data.sort((a, b) => moment(a.startDate) - moment(b.startDate));
-  console.log('sortedData :>> ', sortedData);
+  console.log("data :>> ", data);
+
+  data.sort((a, b) => moment(a.startDate) - moment(b.startDate));
 
   const formattedData = () => {
+    const { interval, year } = req.body.downloadScheduleOptions;
+
     let startingDate = moment([year]);
     const endingDate = moment([year + 1]);
 
     const formattedData = [];
 
-    while (moment(startingDate).isBefore(endingDate)) {
-      console.log('startingDate :>> ', startingDate);
-      // Check first day (jan 1st)
-      // if no appointments fall on that day, the data should look like this (given interval 2):
-      /**
-       * Timeframe: Day 1 - 3
-       * Pickup: 0
-       * Dropoff: 0
-       * Other: 0
-       */
-    }
+    let day = 1;
+    /*     while (moment(startingDate).isBefore(endingDate)) { */
+    const generateIntervalObject = () => {
+      const intervalObject = {
+        timeframe: `Day ${day} - Day ${day + interval - 1}`,
+      };
+      let pickup = 0,
+        dropoff = 0,
+        other = 0;
+      for (let i = 0; i < interval; i++) {
+        data.forEach(appointment => {
+          const { title } = appointment;
+          const startDate = moment(appointment.startDate);
+          if (
+            startDate.isBetween(
+              startingDate.startOf("day"),
+              startingDate.endOf("day")
+            )
+          ) {
+            if (title === "Pickup") pickup++;
+            if (title === "Dropoff") dropoff++;
+            if (title === "Other") other++;
+          }
+        });
+      }
+
+      intervalObject.pickup = pickup;
+      intervalObject.dropoff = dropoff;
+      intervalObject.other = other;
+
+      formattedData.push(intervalObject);
+    };
+
+    generateIntervalObject();
+
+    return formattedData;
   };
 
-
+  const newCSVData = formattedData();
+  // newCSVData.push({ timeframe: "TEST", pickup: 0, dropoff: 0, other: 0 });
+  // console.log("newCSVData :>> ", newCSVData);
+  // };
 
   try {
-    csvWriter.writeRecords(data).then(() => res.json("Success"));
+    csvWriter.writeRecords(newCSVData).then(() => res.json("Success"));
   } catch (err) {
     res.json(err);
   }
