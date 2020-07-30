@@ -37,6 +37,9 @@ import {
   setDownloadYear,
 } from "../redux/actions/downloadScheduleActions";
 
+import { toast, ToastContainer, Flip } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Moment from "moment";
 import { extendMoment } from "moment-range";
 import { FormHelperText } from "@material-ui/core";
@@ -54,11 +57,14 @@ const useStyles = makeStyles(theme => ({
     padding: 30,
     [theme.breakpoints.down("sm")]: {
       flexDirection: "column",
-    }
+    },
   },
   img: {
     marginLeft: 30,
-
+  },
+  toast: {
+    marginTop: 90,
+    marginRight: 135
   }
 }));
 
@@ -91,7 +97,7 @@ function SchedulerLayout({
 
   async function generateCSV() {
     try {
-      const response = await fetch("/api/csv", {
+      await fetch("/api/csv", {
         method: "post",
         headers: {
           Accept: "application/json",
@@ -99,9 +105,30 @@ function SchedulerLayout({
         },
         body: JSON.stringify({ data, downloadScheduleOptions }),
       });
+
+
+      toast("Success! Please check your home directory.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        transition: Flip
+      });
       //toast
     } catch (err) {
-      console.log(err);
+      toast.error("Something went wrong. Please try again.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        transition: Flip
+      });
     }
   }
 
@@ -252,6 +279,7 @@ function SchedulerLayout({
 
   return (
     <Paper>
+      <ToastContainer className={classes.toast}/>
       <Scheduler data={data} height={815}>
         <ViewState
           currentDate={currentDate}

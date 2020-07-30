@@ -2,11 +2,11 @@ import { SET_DRIVER } from "../actionTypes";
 
 const initialState = {
   driverList: [
-    { id: 0, name: "Bobby McBob" },
-    { id: 1, name: "Hammy Hambone" },
-    { id: 2, name: "Fluffy" },
+    { id: 0, name: "Tulip Train" },
+    { id: 1, name: "Daffodil Dirigible" },
+    { id: 2, name: "Lily Limosine" },
   ],
-  selectedDriver: { id: 0, name: "Bobby McBob" },
+  selectedDriver: { id: 0, name: "Tulip Train" },
 };
 
 export default function (state = initialState, action) {
