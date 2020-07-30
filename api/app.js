@@ -1,4 +1,4 @@
-const express = require("express")
+const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 
@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 
 const csvRoutes = require("./routes/csv");
 
-app.use("/api/csv", csvRoutes)
+app.use("/api/csv", csvRoutes);
 
 const PORT = process.env.PORT || 5000;
 
