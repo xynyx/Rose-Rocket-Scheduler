@@ -4,18 +4,7 @@ import {
   DELETE_APPOINTMENT,
 } from "../actionTypes";
 
-const initialState = {
-  0: [
-    {
-      title: "Pickup",
-      startDate: new Date(),
-      endDate: new Date(),
-      id: 0,
-    },
-  ],
-  1: [],
-  2: [],
-};
+import { initialState } from "../initialState/appointmentState";
 
 export default function (state = initialState, action) {
   switch (action.type) {
@@ -37,8 +26,8 @@ export default function (state = initialState, action) {
         ...state,
         [currentDriverId]: newAppointmentState,
       };
+
     case EDIT_APPOINTMENT:
-      // TODO - refactor logic back into WeekView
       const { currentDriver, changed } = action.payload;
 
       const updatedAppointments = state[currentDriver].map(appointment => {
@@ -48,6 +37,7 @@ export default function (state = initialState, action) {
       });
 
       return { ...state, [currentDriver]: updatedAppointments };
+
     case DELETE_APPOINTMENT:
       const { deleted } = action.payload;
       const currentDriverID = action.payload.currentDriver;
@@ -56,12 +46,6 @@ export default function (state = initialState, action) {
         appointment => appointment.id !== deleted
       );
 
-      console.log("deleted :>> ", deleted);
-      console.log("currentDriverID :>> ", currentDriverID);
-
-      console.log("updatedAppointmentsAgain :>> ", updatedAppointmentsAgain);
-
-      console.log("state :>> ", state);
       return {
         ...state,
         [currentDriverID]: updatedAppointmentsAgain,

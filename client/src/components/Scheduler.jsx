@@ -18,6 +18,8 @@ import {
   AppointmentForm,
 } from "@devexpress/dx-react-scheduler-material-ui";
 
+import { makeStyles } from "@material-ui/core/styles";
+
 import Alert from "@material-ui/lab/Alert";
 import Button from "@material-ui/core/Button";
 
@@ -37,8 +39,28 @@ import {
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
+import { FormHelperText } from "@material-ui/core";
 const moment = extendMoment(Moment);
 moment().format();
+
+const useStyles = makeStyles(theme => ({
+  // root: {
+  //   height: "95vh"
+  // },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 30,
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    }
+  },
+  img: {
+    marginLeft: 30,
+
+  }
+}));
 
 function SchedulerLayout({
   appointments,
@@ -51,6 +73,8 @@ function SchedulerLayout({
   downloadScheduleOptions,
   setDownloadYear,
 }) {
+  const classes = useStyles();
+
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
 
@@ -228,7 +252,7 @@ function SchedulerLayout({
 
   return (
     <Paper>
-      <Scheduler data={data} height={936}>
+      <Scheduler data={data} height={815}>
         <ViewState
           currentDate={currentDate}
           onCurrentDateChange={currentDateChange}
@@ -238,7 +262,8 @@ function SchedulerLayout({
         <WeekView startDayHour={0} endDayHour={24} />
         <Toolbar />
         <DateNavigator />
-        <div>
+        <div className={classes.header}>
+          <img className={classes.img} src="/img/logo.svg" />
           <DriverSelect drivers={drivers} setDriver={setDriver} />
           <GenerateCSV
             generateCSV={generateCSV}

@@ -8,11 +8,14 @@ import { connect } from "react-redux";
 
 const useStyles = makeStyles({
   root: {
-    float: "right",
     display: "flex",
     alignItems: "center",
-    width: 500,
+    justifyContent: "center"
   },
+  button: {
+    marginRight: 10,
+    width: "20%"
+  }
 });
 
 export default function GenerateCSV({
@@ -25,7 +28,7 @@ export default function GenerateCSV({
 
   return (
     <div className={classes.root}>
-      <Button onClick={generateCSV} variant="contained" color="primary">
+      <Button className={classes.button} onClick={generateCSV} variant="contained" color="primary">
         Download Schedule
       </Button>
       <IntervalSelect
