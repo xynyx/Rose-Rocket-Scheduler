@@ -12,5 +12,5 @@ https://roserocket-driver-scheduler.herokuapp.com/
 
 ## How to Run
 
-- 1. Install dependencies in client folder, then api folder
-- 2. In the api folder, run "npm run dev" to concurrently run both the client and api
+- 1. Install dependencies in root, then client folder
+- 2. In the root, run "npm run dev" to concurrently run both the client and api
