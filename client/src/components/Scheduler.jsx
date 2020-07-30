@@ -64,6 +64,9 @@ const useStyles = makeStyles(theme => ({
     marginTop: 90,
     marginRight: 135,
   },
+  customForm: {
+    marginTop: 15,
+  },
 }));
 
 function SchedulerLayout({
@@ -248,7 +251,6 @@ function SchedulerLayout({
         progress: undefined,
         transition: Flip,
       });
-      //toast
     } catch (err) {
       toast.error("Something went wrong. Please try again.", {
         position: "top-right",
@@ -283,13 +285,21 @@ function SchedulerLayout({
         onFieldChange={onFieldChange}
         {...restProps}
       >
-        <AppointmentForm.Label text="Location" type="title" />
+        <AppointmentForm.Label
+          className={classes.customForm}
+          text="Location"
+          type="title"
+        />
         <AppointmentForm.TextEditor
           value={appointmentData.location}
           onValueChange={onLocationChange}
           placeholder="Location"
         />
-        <AppointmentForm.Label text="Type of Dispatch" type="title" />
+        <AppointmentForm.Label
+          className={classes.customForm}
+          text="Type of Dispatch"
+          type="title"
+        />
         <AppointmentForm.Select
           availableOptions={[
             { id: "Pickup", text: "Pickup" },
