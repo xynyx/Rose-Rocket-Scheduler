@@ -35,11 +35,11 @@ export default function YearSelect({ setDownloadYear, year }) {
   const yearList = () => {
     const years = [];
 
-    for (let i = 2000; i <= moment().year(); i++) {
+    for (let i = moment().year(); i >= 2000; i--) {
       years.push(i);
     }
 
-    return years.reverse().map(year => (
+    return years.map(year => (
       <MenuItem key={year} value={year}>
         {year}
       </MenuItem>

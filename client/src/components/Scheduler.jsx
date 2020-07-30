@@ -53,8 +53,8 @@ function SchedulerLayout({
 }) {
   const currentDriver = drivers.selectedDriver.id;
   const data = appointments[currentDriver];
-  const [errors, setErrors] = useState({});
 
+  const [errors, setErrors] = useState({});
   const [currentDate, setCurrentDate] = useState(Date.now());
   const [tasksToOverwrite, setTasksToOverwrite] = useState({
     newAppointment: {},
@@ -66,14 +66,6 @@ function SchedulerLayout({
   };
 
   async function generateCSV() {
-    /*   header: [
-    { id: "timeframe", title: "TIMEFRAME" },
-    { id: "pickup", title: "PICKUP" },
-    { id: "dropoff", title: "DROPOFF" },
-    { id: "other", title: "OTHER" },
-  ], */
-
-
     try {
       const response = await fetch("/api/csv", {
         method: "post",
@@ -83,7 +75,7 @@ function SchedulerLayout({
         },
         body: JSON.stringify({ data, downloadScheduleOptions }),
       });
-      console.log("response :>> ", response);
+      //toast
     } catch (err) {
       console.log(err);
     }
@@ -136,7 +128,6 @@ function SchedulerLayout({
     }
 
     if (Object.keys(errors).length === 0) {
-      console.log("errors :>> ", errors);
       setErrors({});
 
       /**
