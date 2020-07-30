@@ -97,6 +97,8 @@ function SchedulerLayout({
   const commitChanges = ({ added, changed, deleted }) => {
     // Set dates and appointment depending on it being added or changed
     let startDate, endDate, newAppointment;
+
+    console.log("changed :>> ", changed);
     if (added) {
       // Set default title
       if (!added.title) added.title = "Pickup";
@@ -105,9 +107,26 @@ function SchedulerLayout({
       endDate = added.endDate;
       newAppointment = added;
     } else if (changed) {
-      startDate = changed.startDate;
-      endDate = changed.endDate;
+      const changedAppointmentId = Number(Object.keys(changed)[0]);
+
+      // Get the original appointment that is being changed
+      const beforeChangeAppointment = data.find(
+        appointment => appointment.id === changedAppointmentId
+      );
+
       newAppointment = changed;
+      // If the changed data doesn't include a start or end date, get it from the original appointment data
+      if (!changed[changedAppointmentId].startDate) {
+        startDate = beforeChangeAppointment.startDate;
+      } else {
+        startDate = changed[changedAppointmentId].startDate;
+      }
+
+      if (!changed[changedAppointmentId].endDate) {
+        endDate = beforeChangeAppointment.endDate;
+      } else {
+        endDate = changed[changedAppointmentId].endDate;
+      }
     }
     // The range that the new appointment falls into (for comparisons)
     const newAppointmentRange = moment.range(startDate, endDate);
@@ -181,6 +200,8 @@ function SchedulerLayout({
     }
     return <AppointmentForm.TextEditor {...props} />;
   };
+
+  console.log("tasksToOverwrite :>> ", tasksToOverwrite);
 
   // When user wants to overwrite task
   const replaceOverlappingTask = () => {
