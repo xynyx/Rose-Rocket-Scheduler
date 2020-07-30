@@ -5,6 +5,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 
+import PropTypes from "prop-types";
+
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
@@ -41,3 +43,8 @@ export default function DriverSelect({ drivers, setDriver }) {
     </FormControl>
   );
 }
+
+DriverSelect.propTypes = {
+  drivers: PropTypes.object.isRequired,
+  setDriver: PropTypes.func.isRequired,
+};

@@ -37,6 +37,8 @@ import {
   setDownloadYear,
 } from "../redux/actions/downloadScheduleActions";
 
+import PropTypes from "prop-types";
+
 import { toast, ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -334,6 +336,18 @@ function SchedulerLayout({
     </Paper>
   );
 }
+
+SchedulerLayout.propTypes = {
+  appointments: PropTypes.object.isRequired,
+  addAppointment: PropTypes.func.isRequired,
+  editAppointment: PropTypes.func.isRequired,
+  deleteAppointment: PropTypes.func.isRequired,
+  drivers: PropTypes.object.isRequired,
+  setDriver: PropTypes.func.isRequired,
+  setDownloadInterval: PropTypes.func.isRequired,
+  downloadScheduleOptions: PropTypes.object.isRequired,
+  setDownloadYear: PropTypes.func.isRequired,
+};
 
 const mapStateToProps = state => ({
   appointments: state.appointments,

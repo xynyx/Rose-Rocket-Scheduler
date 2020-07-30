@@ -5,6 +5,8 @@ import Button from "@material-ui/core/Button";
 import IntervalSelect from "./IntervalSelect";
 import YearSelect from "./YearSelect";
 
+import PropTypes from "prop-types";
+
 const useStyles = makeStyles({
   root: {
     display: "flex",
@@ -46,3 +48,10 @@ export default function GenerateCSV({
     </div>
   );
 }
+
+GenerateCSV.propTypes = {
+  downloadScheduleOptions: PropTypes.object.isRequired,
+  setDownloadInterval: PropTypes.func.isRequired,
+  setDownloadYear: PropTypes.func.isRequired,
+  generateCSV: PropTypes.func.isRequired,
+};

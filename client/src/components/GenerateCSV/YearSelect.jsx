@@ -5,6 +5,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 
+import PropTypes from "prop-types";
+
 import moment from "moment";
 moment().format();
 
@@ -55,3 +57,8 @@ export default function YearSelect({ setDownloadYear, year }) {
     </FormControl>
   );
 }
+
+YearSelect.propTypes = {
+  setDownloadYear: PropTypes.func.isRequired,
+  year: PropTypes.number.isRequired,
+};
