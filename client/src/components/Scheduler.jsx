@@ -98,7 +98,6 @@ function SchedulerLayout({
     // Set dates and appointment depending on it being added or changed
     let startDate, endDate, newAppointment;
 
-    console.log("changed :>> ", changed);
     if (added) {
       // Set default title
       if (!added.title) added.title = "Pickup";
@@ -200,8 +199,6 @@ function SchedulerLayout({
     }
     return <AppointmentForm.TextEditor {...props} />;
   };
-
-  console.log("tasksToOverwrite :>> ", tasksToOverwrite);
 
   // When user wants to overwrite task
   const replaceOverlappingTask = () => {

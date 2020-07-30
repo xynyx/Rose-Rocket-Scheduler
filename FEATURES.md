@@ -16,3 +16,6 @@
 - When downloading schedule, it will appear in the users home directory (OS specific), with a toast on success or failure
 - In the example you gave for 2 day intervals, the time-frames were overlapping -> I decided to not have them overlap (each set of dates is inclusive)
   - eg. Day 1 - 2, Day 3 - 4
+
+## Issues
+- Various errors related to PropTypes interacting with the Scheduler library and Moment.js in unexpected ways
