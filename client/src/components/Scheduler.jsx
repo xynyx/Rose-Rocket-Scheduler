@@ -299,7 +299,7 @@ function SchedulerLayout({
         <Toolbar />
         <DateNavigator />
         <div className={classes.header}>
-          <img className={classes.img} src="/img/logo.svg" />
+          <img className={classes.img} src="/img/logo.svg" alt="logo" />
           <DriverSelect drivers={drivers} setDriver={setDriver} />
           <GenerateCSV
             generateCSV={generateCSV}
