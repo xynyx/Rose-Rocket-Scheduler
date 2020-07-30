@@ -7,7 +7,9 @@
     "client": "npm start --prefix ../client",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "nodemon --inspect app.js"
+    "server": "nodemon --inspect app.js",
+    "start": "node app.js",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "keywords": [],
   "author": "Matt Taylor",
