@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import { connect } from "react-redux";
 import {
@@ -42,14 +42,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
-import { FormHelperText } from "@material-ui/core";
 const moment = extendMoment(Moment);
 moment().format();
 
 const useStyles = makeStyles(theme => ({
-  // root: {
-  //   height: "95vh"
-  // },
   header: {
     display: "flex",
     justifyContent: "space-between",
@@ -64,8 +60,8 @@ const useStyles = makeStyles(theme => ({
   },
   toast: {
     marginTop: 90,
-    marginRight: 135
-  }
+    marginRight: 135,
+  },
 }));
 
 function SchedulerLayout({
@@ -95,46 +91,12 @@ function SchedulerLayout({
     setCurrentDate(currentDate);
   };
 
-  async function generateCSV() {
-    try {
-      await fetch("/api/csv", {
-        method: "post",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ data, downloadScheduleOptions }),
-      });
-
-
-      toast("Success! Please check your home directory.", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        transition: Flip
-      });
-      //toast
-    } catch (err) {
-      toast.error("Something went wrong. Please try again.", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        transition: Flip
-      });
-    }
-  }
-
+  // Handles all appointments being added, changed, or deleted
   const commitChanges = ({ added, changed, deleted }) => {
+    // Set dates and appointment depending on it being added or changed
     let startDate, endDate, newAppointment;
     if (added) {
+      // Set default title
       if (!added.title) added.title = "Pickup";
 
       startDate = added.startDate;
@@ -145,17 +107,31 @@ function SchedulerLayout({
       endDate = changed.endDate;
       newAppointment = changed;
     }
+    // The range that the new appointment falls into (for comparisons)
     const newAppointmentRange = moment.range(startDate, endDate);
 
     const errors = {};
 
+    // If the start date and end date are on different days -> set error
+    if (!moment(startDate).isSame(endDate, "day")) {
+      errors.sameDay = "A task can't go into the next day";
+
+      return setErrors(errors);
+    }
+
+    // If an appointment is deleted, it will have a numerical value (the id)
     if (deleted === undefined) {
+      // Initialize potential appointments that overlap the new one
       const oldAppointments = [];
+
       data.forEach(oldAppointment => {
         const { startDate, endDate } = oldAppointment;
 
         const oldAppointmentRange = moment.range(startDate, endDate);
 
+        // If the new appointment overlaps the old, or the old overlaps the new
+        // AND the new appointment ID isn't the same as the old one...
+        // Then set error
         if (
           (newAppointmentRange.overlaps(oldAppointmentRange) ||
             oldAppointmentRange.overlaps(newAppointmentRange)) &&
@@ -172,23 +148,17 @@ function SchedulerLayout({
       setTasksToOverwrite({ oldAppointments, newAppointment });
     }
 
-    if (!moment(startDate).isSame(endDate, "day")) {
-      errors.sameDay = "A task can't go into the next day";
-
-      setErrors(errors);
-    }
-
     if (Object.keys(errors).length === 0) {
       setErrors({});
 
       /**
-       *
+       * @param {Object} title,startDate,endDate,[notes],[location]
        */
       if (added) {
         addAppointment({ added, currentDriver });
       }
       /**
-       *
+       * @param {Object} [title][startDate][endDate][notes][location]
        */
       if (changed) {
         editAppointment({ changed, currentDriver });
@@ -196,15 +166,11 @@ function SchedulerLayout({
     }
 
     /**
-     *
+     * @param {Integer} id
      */
     if (deleted !== undefined) {
       deleteAppointment({ deleted, currentDriver });
     }
-  };
-
-  const messages = {
-    moreInformationLabel: "",
   };
 
   const TextEditor = props => {
@@ -214,7 +180,9 @@ function SchedulerLayout({
     return <AppointmentForm.TextEditor {...props} />;
   };
 
+  // When user wants to overwrite task
   const replaceOverlappingTask = () => {
+    // Iterate through the potential multiple appointments that overlap and delete them all
     tasksToOverwrite.oldAppointments.forEach(oldAppointment => {
       deleteAppointment({
         deleted: oldAppointment.id,
@@ -238,6 +206,44 @@ function SchedulerLayout({
     setTasksToOverwrite({ newAppointment: {}, oldAppointments: [] });
   };
 
+  // Generate CSV for download
+  async function generateCSV() {
+    try {
+      await fetch("/api/csv", {
+        method: "post",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data, downloadScheduleOptions }),
+      });
+
+      toast("Success! Please check your home directory.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        transition: Flip,
+      });
+      //toast
+    } catch (err) {
+      toast.error("Something went wrong. Please try again.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        transition: Flip,
+      });
+    }
+  }
+
+  // Modified layout of editing component
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
     const onDispatchChange = title => {
       onFieldChange({ title });
@@ -279,7 +285,7 @@ function SchedulerLayout({
 
   return (
     <Paper>
-      <ToastContainer className={classes.toast}/>
+      <ToastContainer className={classes.toast} />
       <Scheduler data={data} height={815}>
         <ViewState
           currentDate={currentDate}
@@ -323,7 +329,6 @@ function SchedulerLayout({
           textEditorComponent={TextEditor}
           // Hides radio boxes
           booleanEditorComponent={() => null}
-          messages={messages}
         />
       </Scheduler>
     </Paper>

@@ -1,7 +1,7 @@
 import moment from "moment";
 moment().format();
 
-export const initialState = {
+export const initialAppointmentState = {
   0: [
     {
       title: "Pickup",
@@ -110,4 +110,18 @@ export const initialState = {
       id: 7,
     },
   ],
+};
+
+export const initialDownloadState = {
+  year: moment().year(),
+  interval: 2,
+};
+
+export const initialDriverState = {
+  driverList: [
+    { id: 0, name: "Tulip Train" },
+    { id: 1, name: "Daffodil Dirigible" },
+    { id: 2, name: "Lily Limosine" },
+  ],
+  selectedDriver: { id: 0, name: "Tulip Train" },
 };

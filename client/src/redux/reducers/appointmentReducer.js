@@ -4,9 +4,9 @@ import {
   DELETE_APPOINTMENT,
 } from "../actionTypes";
 
-import { initialState } from "../initialState/appointmentState";
+import { initialAppointmentState } from "../initialState";
 
-export default function (state = initialState, action) {
+export default function (state = initialAppointmentState, action) {
   switch (action.type) {
     case ADD_APPOINTMENT:
       const currentDriverId = action.payload.currentDriver;

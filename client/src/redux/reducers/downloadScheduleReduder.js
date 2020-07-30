@@ -1,13 +1,8 @@
 import { SET_DOWNLOAD_INTERVAL, SET_DOWNLOAD_YEAR } from "../actionTypes";
-import moment from "moment";
-moment().format();
 
-const initialState = {
-  year: moment().year(),
-  interval: 2,
-};
+import { initialDownloadState } from "../initialState";
 
-export default function (state = initialState, action) {
+export default function (state = initialDownloadState, action) {
   switch (action.type) {
     case SET_DOWNLOAD_YEAR:
       return {
