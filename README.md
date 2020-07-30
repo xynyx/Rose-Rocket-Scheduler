@@ -2,6 +2,8 @@
 
 Create, edit, and delete appointments for your drivers with this handy tool.
 
+Generate and download a CSV file with a count of the current driver's various dispatches with a specific year and interval between days.
+
 https://roserocket-driver-scheduler.herokuapp.com/
 
 - Note -> Heroku does not allow files to be downloaded and saved locally; please install project to see the "Download Schedule" button work correctly
