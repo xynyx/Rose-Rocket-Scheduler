@@ -5,6 +5,9 @@
 - Spans multiple years
 - Can download schedule for a specific year
 - Not a 'discrete timescale' - minutes, months and years included!
+- Deployed at https://roserocket-driver-scheduler.herokuapp.com/
+  - However Heroku does not allow files to be saved locally, so the "Download Schedule" button will not work in the deployed app
+  - Please download and install the project to see the Download Schedule button in action
 
 ## Considerations
 
