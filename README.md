@@ -4,7 +4,7 @@ Create, edit, and delete appointments for your drivers with this handy tool.
 
 https://roserocket-driver-scheduler.herokuapp.com/
 
-- Note -> Heroku does not allow files to be downloaded and saved; please install project to see the "Download Schedule" button work correctly
+- Note -> Heroku does not allow files to be downloaded and saved locally; please install project to see the "Download Schedule" button work correctly
 
 ## Screenshots
 
