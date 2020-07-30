@@ -18,6 +18,11 @@ import {
   AppointmentForm,
 } from "@devexpress/dx-react-scheduler-material-ui";
 
+import PropTypes from "prop-types";
+
+import { ToastContainer, toast, Flip } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { makeStyles } from "@material-ui/core/styles";
 
 import Alert from "@material-ui/lab/Alert";
@@ -25,6 +30,8 @@ import Button from "@material-ui/core/Button";
 
 import DriverSelect from "./DriverSelect";
 import GenerateCSV from "./GenerateCSV/GenerateCSV";
+import TextEditor from "./CustomEditingComponents/TextEditor";
+import BasicLayout from "./CustomEditingComponents/BasicLayout";
 
 import {
   addAppointment,
@@ -36,11 +43,6 @@ import {
   setDownloadInterval,
   setDownloadYear,
 } from "../redux/actions/downloadScheduleActions";
-
-import PropTypes from "prop-types";
-
-import { toast, ToastContainer, Flip } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 import Moment from "moment";
 import { extendMoment } from "moment-range";
@@ -196,13 +198,6 @@ function SchedulerLayout({
     }
   };
 
-  const TextEditor = props => {
-    if (props.type === "titleTextEditor") {
-      return null;
-    }
-    return <AppointmentForm.TextEditor {...props} />;
-  };
-
   // When user wants to overwrite task
   const replaceOverlappingTask = () => {
     // Iterate through the potential multiple appointments that overlap and delete them all
@@ -229,7 +224,6 @@ function SchedulerLayout({
     setTasksToOverwrite({ newAppointment: {}, oldAppointments: [] });
   };
 
-  // Generate CSV for download
   async function generateCSV() {
     try {
       await fetch("/api/csv", {
@@ -264,54 +258,6 @@ function SchedulerLayout({
       });
     }
   }
-
-  // Modified layout of editing component
-  const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
-    const onDispatchChange = title => {
-      onFieldChange({ title });
-    };
-
-    const onLocationChange = location => {
-      onFieldChange({ location });
-    };
-
-    appointmentData.title = appointmentData.title
-      ? appointmentData.title
-      : "Pickup";
-
-    return (
-      <AppointmentForm.BasicLayout
-        appointmentData={appointmentData}
-        onFieldChange={onFieldChange}
-        {...restProps}
-      >
-        <AppointmentForm.Label
-          className={classes.customForm}
-          text="Location"
-          type="title"
-        />
-        <AppointmentForm.TextEditor
-          value={appointmentData.location}
-          onValueChange={onLocationChange}
-          placeholder="Location"
-        />
-        <AppointmentForm.Label
-          className={classes.customForm}
-          text="Type of Dispatch"
-          type="title"
-        />
-        <AppointmentForm.Select
-          availableOptions={[
-            { id: "Pickup", text: "Pickup" },
-            { id: "Dropoff", text: "Dropoff" },
-            { id: "Other", text: "Other" },
-          ]}
-          onValueChange={onDispatchChange}
-          value={appointmentData.title}
-        />
-      </AppointmentForm.BasicLayout>
-    );
-  };
 
   return (
     <Paper>
