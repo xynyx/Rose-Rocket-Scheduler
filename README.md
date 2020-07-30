@@ -6,7 +6,7 @@ Generate and download a CSV file with a count of the current driver's various di
 
 https://roserocket-driver-scheduler.herokuapp.com/
 
-- Note -> Heroku does not allow files to be downloaded and saved locally; please install project to see the "Download Schedule" button work correctly
+- Note: Heroku does not allow files to be downloaded and saved locally; please install project to see the "Download Schedule" button work correctly
 
 ## Screenshots
 
